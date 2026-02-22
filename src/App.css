@@ -1,4 +1,87 @@
-#root {
+@import 'tailwindcss';
+
+
+/* Reset styles */  
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* CSS Variables */
+:root {
+  --color-bg: #F3F5FC;
+  --color-text: #222;
+  --color-primary:#DBEBF7;
+  --color-secondary: #51CCD4;
+  --tiktok-color: #090A13;
+  --youtube-color: #E7000B;
+  --instagram-color: linear-gradient(90deg,rgba(210, 72, 208, 1) 0%, rgba(255, 96, 64, 1) 100%);
+  --tag-color: #D5E6FF;
+  --color-surface: #F3F5FC;
+  --font-base: "DM Sans", sans-serif;
+  --shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  --container-max-width: 1360px;
+  --container-gutter: clamp(1rem, 3vw, 2rem);
+}
+
+body {
+  font-family: var(--font-base);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1rem;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.625 rem;
+}
+
+img, svg, video { max-width: 100%; display:block; } 
+
+a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--color-secondary);
+}
+
+button {
+  font-family: inherit;
+  background: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  padding: 1rem 1.375rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--color-secondary);
+}
+
+input, textarea, select {
+  font-family: inherit;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.625rem;
+}
+
+.layout-container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--container-gutter);
+}
+
+
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -39,4 +122,4 @@
 
 .read-the-docs {
   color: #888;
-}
+} */
