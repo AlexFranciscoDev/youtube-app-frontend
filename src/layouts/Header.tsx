@@ -11,25 +11,26 @@ export const Header = () => {
     const { isLoggedIn, user, logout } = useAuth();
 
     return (
-        <header className="header">
-            <div className="header-content">
-                <h1>Video Organizer</h1>
+        <header className="header mx-auto flex flex-col justify-between items-center p-5 sm:flex-row">
+            <div className="header-content flex flex-col gap-2">
+                <h1 className='text-3xl font-light'>Video Organizer</h1>
+                <span className=''>Organize and manage your videos</span>
             </div>
             <nav className="nav">
-                { !isLoggedIn ? (
-                    <>
-                        <Link to="/login">Login</Link>
-                        <Link to="/register">Register</Link>
-                    </>
-                ):
+                {!isLoggedIn ? (
+                    <div className='flex gap-5'>
+                        <Link to="/login"><button>Login</button></Link>
+                        <Link to="/register"><button>Register</button></Link>
+                    </div>
+                ) :
                 (
-                    <>
-                    <span>Hola, {user?.name}</span>
-                    <Link to="/profile">Perfil</Link>
-                    <button>
-                        Logout
-                    </button>
-                    </>
+                    <div className='flex gap-5 justify-center items-center'>
+                        <span>Hola,{user?.name}</span>
+                        <Link to="/profile">Perfil</Link>
+                        <button>
+                            Logout
+                        </button>
+                    </div>
                 )}
             </nav>
         </header>
