@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Header } from "./Header";
+import { Footer } from './Footer';
 import { Outlet } from "react-router-dom";
 
 
@@ -11,6 +12,7 @@ export const MainLayout = () => {
             <main>
                 <Outlet />
             </main>
+            <Footer/>
         </>
     )
 }

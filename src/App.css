@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import './assets/css/header.css';
 
 
 /* Reset styles */  
@@ -35,7 +34,6 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
   color: var(--color-text);
   margin-bottom: 0.625 rem;
 }
@@ -80,6 +78,10 @@ input, textarea, select {
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: var(--container-gutter);
+}
+
+.social-icon {
+  @apply text-lg transition duration-400 hover:-translate-y-[5px];
 }
 
 
