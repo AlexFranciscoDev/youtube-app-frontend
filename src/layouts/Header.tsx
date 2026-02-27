@@ -11,7 +11,7 @@ export const Header = () => {
     const { isLoggedIn, user, logout } = useAuth();
 
     return (
-        <header className='header bg-[var(--color-primary)]'>
+        <header className='header bg-[var(--background-card)]'>
             <div className=" layout-container mx-auto flex flex-col justify-between items-center p-5 sm:flex-row">
                 <div className="header-content flex flex-col gap-2">
                     <h1 className='text-3xl font-bold'>Video Organizer</h1>

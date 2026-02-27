@@ -4,7 +4,7 @@ import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons'
 
 export const Footer = () => {
     return (
-        <footer className='bg-[var(--tag-color)]'>
+        <footer className='bg-[var(--background-card)]'>
             <div className='layout-container'>
                 <h3 className='text-center text-md font-normal'>
                     Alex Francisco Dev - 2026 All rights reserved
