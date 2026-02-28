@@ -1,4 +1,101 @@
-#root {
+@import 'tailwindcss';
+
+
+/* Reset styles */  
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* CSS Variables */
+:root {
+  --color-bg: #F3F5FC;
+  --color-text: #8a839a;
+  --color-title: #F3F5FC;
+  --color-primary:#DBEBF7;
+  --color-secondary: #7A60C0;
+  --color-terciary: #4987FF;
+  --color-secondary-hover: #257ed1;
+  --tiktok-color: #090A13;
+  --youtube-color: #E7000B;
+  --instagram-color: linear-gradient(90deg,rgba(210, 72, 208, 1) 0%, rgba(255, 96, 64, 1) 100%);
+  --tag-color: #D5E6FF;
+  --color-surface: #F3F5FC;
+  --font-base: "DM Sans", sans-serif;
+  --shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+  --container-max-width: 1360px;
+  --container-gutter: clamp(1rem, 3vw, 2rem);
+  --background-gradient: linear-gradient(90deg,rgba(122, 96, 192, 1) 0%, rgba(73, 135, 255, 1) 100%);
+  --background-gradient-hover: linear-gradient(90deg,rgba(154, 133, 212, 1) 0%, rgba(111, 148, 222, 1) 100%);
+  --background-card: #231D3C;
+  --background-gradient-dark: linear-gradient(90deg,rgba(37, 26, 71, 1) 0%, rgba(30, 31, 67, 1) 100%);
+}
+
+body {
+  font-family: var(--font-base);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1rem;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-title);
+  margin-bottom: 0.625 rem;
+}
+
+img, svg, video { max-width: 100%; display:block; } 
+
+a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--color-secondary);
+}
+
+button {
+  font-family: inherit;
+  background: var(--background-gradient);
+  color: white;
+  border: none;
+  padding: 0.9rem 1.375rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+button:hover {
+  background: var(--background-gradient-hover);
+  transform: translateY(-8px);
+}
+
+input, textarea, select {
+  font-family: inherit;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  border-radius: 10px;
+  margin-bottom: 0.625rem;
+}
+
+.layout-container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--container-gutter);
+}
+
+.dark-container {
+  background: var(--background-gradient-dark);
+}
+
+.social-icon {
+  @apply text-lg transition duration-400 hover:-translate-y-[5px];
+}
+
+
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -39,4 +136,4 @@
 
 .read-the-docs {
   color: #888;
-}
+} */
