@@ -1,35 +1,64 @@
-import React from 'react'
+import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faEye } from '@fortawesome/free-solid-svg-icons'
+import './AuthForm.css'
 
 export const Login = () => {
   return (
-    <div className='dark-container'>
-      <section className='layout-container block m-0' >
-        <div className='w-6/12 bg-[var(--background-card)] p-8 border-1 border-[var(--background-gradient)] rounded-xl'>
+    <div className="auth-page">
+      <section className="auth-card">
+        <div className="auth-icon">
           <FontAwesomeIcon icon={faPlay} />
-          <h1 className='text-[var(--color-title)] '>Welcome</h1>
-          <p>Login to your account to organize your videos</p>
-          <form action="">
-            <label htmlFor="user">
-              Username or email
-              <br />
-              <input type="text" placeholder='you@email.com' />
-            </label>
-            <br />
-            <label htmlFor="password">
-              <div>
-                <span>Password:</span>
-                <a href="#">Forgot password?</a>
-              </div>
-              <br />
-              <input type="password" placeholder='*******' />
-              <br />
-              <input type="button" value="Login" />
-            </label>
-          </form>
-          <p>You don't have an account yet? <a href='#'>Register</a></p>
         </div>
+        <h1 className="auth-title">Bienvenido de nuevo</h1>
+        <p className="auth-description">
+          Inicia sesión en tu cuenta de Video Organizer
+        </p>
+        <form className="auth-form" onSubmit={(event) => event.preventDefault()}>
+          <div className="auth-field">
+            <label htmlFor="email">Correo electrónico</label>
+            <input
+              id="email"
+              className="auth-input"
+              type="email"
+              placeholder="tu@email.com"
+              required
+            />
+          </div>
+          <div className="auth-field">
+            <div className="auth-label-row">
+              <label htmlFor="password">Contraseña</label>
+              <a href="#" className="auth-link">
+                Olvidaste tu contraseña?
+              </a>
+            </div>
+            <div className="password-wrapper">
+              <input
+                id="password"
+                className="auth-input"
+                type="password"
+                placeholder="*******"
+                required
+              />
+              <button
+                type="button"
+                aria-label="Mostrar contraseña"
+                className="password-toggle"
+              >
+                <FontAwesomeIcon icon={faEye} />
+              </button>
+            </div>
+          </div>
+          <button type="submit" className="auth-submit">
+            Iniciar sesión
+          </button>
+        </form>
+        <p className="auth-footer">
+          No tienes cuenta?{' '}
+          <Link to="/register" className="auth-link">
+            Regístrate
+          </Link>
+        </p>
       </section>
     </div>
   )
