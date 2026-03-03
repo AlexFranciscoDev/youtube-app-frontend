@@ -7,7 +7,7 @@ import './AuthForm.css';
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const passwordType = showPassword ? 'text' : 'password';
-  const passwordLabel = showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña';
+  const passwordLabel = showPassword ? 'Hide password' : 'Show password';
   const passwordIcon = showPassword ? faEyeSlash : faEye;
 
   return (
@@ -16,16 +16,16 @@ export const Login = () => {
         <div className="auth-icon">
           <FontAwesomeIcon icon={faPlay} />
         </div>
-        <h1 className="auth-title">Bienvenido de nuevo</h1>
+        <h1 className="auth-title">Welcome back</h1>
         <p className="auth-description">
-          Inicia sesión en tu cuenta de Video Organizer
+          Sign in to your Video Organizer account
         </p>
         <form
           className="auth-form"
           onSubmit={(event) => event.preventDefault()}
         >
           <div className="auth-field">
-            <label htmlFor="email">Correo electrónico</label>
+            <label htmlFor="email">Email</label>
             <input
               id="email"
               className="auth-input"
@@ -36,9 +36,9 @@ export const Login = () => {
           </div>
           <div className="auth-field">
             <div className="auth-label-row">
-              <label htmlFor="password">Contraseña</label>
+              <label htmlFor="password">Password</label>
               <a href="#" className="auth-link">
-                Olvidaste tu contraseña?
+                Forgot your password?
               </a>
             </div>
             <div className="password-wrapper">
@@ -60,13 +60,13 @@ export const Login = () => {
             </div>
           </div>
           <button type="submit" className="auth-submit">
-            Iniciar sesión
+            Sign in
           </button>
         </form>
         <p className="auth-footer">
-          No tienes cuenta?{" "}
+          Don't have an account?{" "}
           <Link to="/register" className="auth-link">
-            Regístrate
+            Sign up
           </Link>
         </p>
       </section>
