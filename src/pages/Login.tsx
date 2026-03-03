@@ -1,9 +1,15 @@
-import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay, faEye } from '@fortawesome/free-solid-svg-icons'
-import './AuthForm.css'
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import './AuthForm.css';
 
 export const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordType = showPassword ? 'text' : 'password';
+  const passwordLabel = showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña';
+  const passwordIcon = showPassword ? faEyeSlash : faEye;
+
   return (
     <div className="auth-page">
       <section className="auth-card">
@@ -14,7 +20,10 @@ export const Login = () => {
         <p className="auth-description">
           Inicia sesión en tu cuenta de Video Organizer
         </p>
-        <form className="auth-form" onSubmit={(event) => event.preventDefault()}>
+        <form
+          className="auth-form"
+          onSubmit={(event) => event.preventDefault()}
+        >
           <div className="auth-field">
             <label htmlFor="email">Correo electrónico</label>
             <input
@@ -36,16 +45,17 @@ export const Login = () => {
               <input
                 id="password"
                 className="auth-input"
-                type="password"
+                type={passwordType}
                 placeholder="*******"
                 required
               />
               <button
                 type="button"
-                aria-label="Mostrar contraseña"
+                aria-label={passwordLabel}
                 className="password-toggle"
+                onClick={() => setShowPassword((prev) => !prev)}
               >
-                <FontAwesomeIcon icon={faEye} />
+                <FontAwesomeIcon icon={passwordIcon} />
               </button>
             </div>
           </div>
@@ -54,12 +64,12 @@ export const Login = () => {
           </button>
         </form>
         <p className="auth-footer">
-          No tienes cuenta?{' '}
+          No tienes cuenta?{" "}
           <Link to="/register" className="auth-link">
             Regístrate
           </Link>
         </p>
       </section>
     </div>
-  )
-}
+  );
+};
