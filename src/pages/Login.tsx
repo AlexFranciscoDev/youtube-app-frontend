@@ -4,8 +4,37 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import './AuthForm.css';
 
+const validateEmail = (value: string): string => {
+  if (!value) return 'Email is required';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Invalid email format';
+  return '';
+};
+
+const validatePassword = (value: string): string => {
+  if (!value) return 'Password is required';
+  if (value.length < 8) return 'Password must be at least 8 characters';
+  return '';
+};
+
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorEmail, setErrorEmail] = useState('');
+  const [errorPassword, setErrorPassword] = useState('');
+  const [touched, setTouched] = useState({ email: false, password: false });
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+    setErrorEmail(emailError);
+    setErrorPassword(passwordError);
+    setTouched({ email: true, password: true });
+    if (emailError || passwordError) return;
+    console.log('Submit:', { email, password });
+  };
+
   const passwordType = showPassword ? 'text' : 'password';
   const passwordLabel = showPassword ? 'Hide password' : 'Show password';
   const passwordIcon = showPassword ? faEyeSlash : faEye;
@@ -22,17 +51,25 @@ export const Login = () => {
         </p>
         <form
           className="auth-form"
-          onSubmit={(event) => event.preventDefault()}
+          onSubmit={handleSubmit}
         >
           <div className="auth-field">
             <label htmlFor="email">Email</label>
             <input
               id="email"
-              className="auth-input"
+              className={`auth-input${errorEmail ? ' auth-input--error' : ''}`}
               type="email"
               placeholder="tu@email.com"
-              required
+              onChange={(event) => {
+                setEmail(event.target.value);
+                if (touched.email) setErrorEmail(validateEmail(event.target.value));
+              }}
+              onBlur={(event) => {
+                setTouched((prev) => ({ ...prev, email: true }));
+                setErrorEmail(validateEmail(event.target.value));
+              }}
             />
+            {errorEmail && <span className="auth-error">{errorEmail}</span>}
           </div>
           <div className="auth-field">
             <div className="auth-label-row">
@@ -44,10 +81,17 @@ export const Login = () => {
             <div className="password-wrapper">
               <input
                 id="password"
-                className="auth-input"
+                className={`auth-input${errorPassword ? ' auth-input--error' : ''}`}
                 type={passwordType}
                 placeholder="*******"
-                required
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                  if (touched.password) setErrorPassword(validatePassword(event.target.value));
+                }}
+                onBlur={(event) => {
+                  setTouched((prev) => ({ ...prev, password: true }));
+                  setErrorPassword(validatePassword(event.target.value));
+                }}
               />
               <button
                 type="button"
@@ -58,6 +102,7 @@ export const Login = () => {
                 <FontAwesomeIcon icon={passwordIcon} />
               </button>
             </div>
+            {errorPassword && <span className="auth-error">{errorPassword}</span>}
           </div>
           <button type="submit" className="auth-submit">
             Sign in
