@@ -3,18 +3,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import './AuthForm.css';
-
-const validateEmail = (value: string): string => {
-  if (!value) return 'Email is required';
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Invalid email format';
-  return '';
-};
-
-const validatePassword = (value: string): string => {
-  if (!value) return 'Password is required';
-  if (value.length < 8) return 'Password must be at least 8 characters';
-  return '';
-};
+import { validateEmail, validatePassword } from '../utils/validators';
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
