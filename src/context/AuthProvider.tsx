@@ -7,17 +7,25 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
-    
-    const login = (user: User, token: string) => {
+    const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
+    const [user, setUser] = useState<User | null>(() => {
+        const stored = localStorage.getItem("user");
+        return stored ? JSON.parse(stored) : null;
+    });
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => !!localStorage.getItem("token"));
+
+    const login = (rawUser: User & { password?: string }, token: string) => {
+        const { password: _, ...safeUser } = rawUser;
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(safeUser));
         setIsLoggedIn(true);
-        setUser(user);
+        setUser(safeUser as User);
         setToken(token);
     }
 
     const logout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setIsLoggedIn(false);
         setUser(null);
         setToken(null);

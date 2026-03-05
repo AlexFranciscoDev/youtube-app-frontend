@@ -50,6 +50,8 @@ export const Login = () => {
     } finally {
       setIsLoading(false);
     }
+
+    // PREGUNTAR COMO FUNCIONA AHORA TODA LA LÓGICA DE ESTO Y LO DEL LOCALSTORAGE DESPUES DE LO DEL CAMBIO EN AUTH.PROVIDER
   };
 
   const isFormValid = !errorEmail && !errorPassword;
