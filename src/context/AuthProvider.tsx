@@ -1,12 +1,6 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { AuthContext } from "./AuthContext";
-
-interface User {
-    id: string;
-    name: string;
-    email: string;
-}
+import { AuthContext, type User } from "./AuthContext";
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -15,23 +9,22 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState<User | null>(null);
+    const [token, setToken] = useState<string | null>(null);
     
-    const login = (name:string , email:string) => {
+    const login = (user: User, token: string) => {
         setIsLoggedIn(true);
-        setUser({
-            id: "1",
-            name,
-            email
-        })
+        setUser(user);
+        setToken(token);
     }
 
     const logout = () => {
         setIsLoggedIn(false);
         setUser(null);
+        setToken(null);
     }
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, user, login, logout}}>
+        <AuthContext.Provider value={{ isLoggedIn, user, login, logout, token}}>
             {children}
         </AuthContext.Provider>
     )

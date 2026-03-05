@@ -41,6 +41,8 @@ export const Register = () => {
     console.log('Submit:', { username, email, password })
   }
 
+  const isFormValid = !errorUsername && !errorEmail && !errorPassword && !errorConfirmPassword
+
   const passwordType = showPassword ? 'text' : 'password'
   const passwordLabel = showPassword ? 'Hide password' : 'Show password'
   const passwordIcon = showPassword ? faEyeSlash : faEye
@@ -149,7 +151,7 @@ export const Register = () => {
             </div>
             {errorConfirmPassword && <span className="auth-error">{errorConfirmPassword}</span>}
           </div>
-          <button type="submit" className="auth-submit">
+          <button type="submit" className="auth-submit" disabled={!isFormValid}>
             Create account
           </button>
         </form>
