@@ -32,26 +32,29 @@ export const Login = () => {
     setIsLoading(true);
 
     try {
+      // Call the API
       const response = await fetch(Global.url + "user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
+      // Set error message if there's any
       if (data.status === "Error") {
         setErrorUser(data.message);
         return;
       }
+      // In case there was already an error. Clean the state
       setErrorUser("");
+      // Add the data to local storage
       login(data.user, data.token);
+      // Redirect to main page.
       navigate("/");
     } catch (error: unknown) {
       setErrorUser(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
-
-    // PREGUNTAR COMO FUNCIONA AHORA TODA LA LÓGICA DE ESTO Y LO DEL LOCALSTORAGE DESPUES DE LO DEL CAMBIO EN AUTH.PROVIDER
   };
 
   const isFormValid = !errorEmail && !errorPassword;

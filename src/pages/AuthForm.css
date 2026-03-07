@@ -140,6 +140,12 @@
   margin-top: -0.2rem;
 }
 
+.auth-success {
+  font-size: 0.8rem;
+  color: #64ec57;
+  margin-top: -0.2rem;
+}
+
 .auth-label-row {
   display: flex;
   align-items: center;

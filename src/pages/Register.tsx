@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import './AuthForm.css'
-import { validateEmail, validatePassword, validateUsername, validateConfirmPassword } from '../utils/validators'
+import { validateEmail, validatePassword, validateUsername, validateConfirmPassword, validateProfileImage } from '../utils/validators'
+import { Global } from "../helpers/Global";
+import { useNavigate } from 'react-router';
 
 export const Register = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
@@ -13,35 +16,68 @@ export const Register = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [profileImage, setProfileImage] = useState<File | null>(null)
 
   const [errorUsername, setErrorUsername] = useState('')
   const [errorEmail, setErrorEmail] = useState('')
   const [errorPassword, setErrorPassword] = useState('')
   const [errorConfirmPassword, setErrorConfirmPassword] = useState('')
+  const [errorProfileImage, setErrorProfileImage] = useState('')
+  const [registerSuccess, setRegisterSuccess] = useState('');
+  const [messageRegister, setMessageRegister] = useState('');
 
   const [touched, setTouched] = useState({
     username: false,
     email: false,
     password: false,
     confirmPassword: false,
+    profileImage: false
   })
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     const usernameError = validateUsername(username)
     const emailError = validateEmail(email)
     const passwordError = validatePassword(password)
     const confirmPasswordError = validateConfirmPassword(confirmPassword, password)
+    const profileImageError = validateProfileImage(profileImage)
     setErrorUsername(usernameError)
     setErrorEmail(emailError)
     setErrorPassword(passwordError)
     setErrorConfirmPassword(confirmPasswordError)
-    setTouched({ username: true, email: true, password: true, confirmPassword: true })
-    if (usernameError || emailError || passwordError || confirmPasswordError) return
-    console.log('Submit:', { username, email, password })
+    setErrorProfileImage(profileImageError)
+    setTouched({ username: true, email: true, password: true, confirmPassword: true, profileImage: true })
+
+    if (usernameError || emailError || passwordError || confirmPasswordError || profileImageError) return
+
+    try {
+      const formData = new FormData()
+      formData.append('username', username)
+      formData.append('email', email)
+      formData.append('password', password)
+      if (profileImage) formData.append('image', profileImage)
+
+      const response = await fetch(Global.url + 'user/register', {
+        method: 'POST',
+        body: formData
+      })
+      const data = await response.json();
+      if (data.status === 'Error') {
+        setRegisterSuccess(data.status);
+        setMessageRegister(data.message);
+        return
+      }
+      setRegisterSuccess(data.status);
+      setMessageRegister(data.message);
+      setTimeout(() => {
+        navigate('/login')
+      }, 2000);
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  const isFormValid = !errorUsername && !errorEmail && !errorPassword && !errorConfirmPassword
+  const isFormValid = !errorUsername && !errorEmail && !errorPassword && !errorConfirmPassword && !errorProfileImage
 
   const passwordType = showPassword ? 'text' : 'password'
   const passwordLabel = showPassword ? 'Hide password' : 'Show password'
@@ -58,6 +94,7 @@ export const Register = () => {
         </div>
         <h1 className="auth-title">Create your account</h1>
         <p className="auth-description">Start organizing your favorite videos</p>
+        {registerSuccess ? <span className='auth-success'>{messageRegister}</span> : <span className='auth-error'>{messageRegister}</span>}
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
             <label htmlFor="register-username">Username</label>
@@ -150,6 +187,25 @@ export const Register = () => {
               </button>
             </div>
             {errorConfirmPassword && <span className="auth-error">{errorConfirmPassword}</span>}
+          </div>
+          <div className="auth-field">
+            <label htmlFor="register-profileimage">Profile image</label>
+            <input
+              id="register-profileimage"
+              className={`auth-input${errorProfileImage ? ' auth-input--error' : ''}`}
+              type="file"
+              accept="image/*"
+              onChange={(event) => {
+                const file = event.target.files?.[0] ?? null
+                setProfileImage(file)
+                if (touched.profileImage) setErrorProfileImage(validateProfileImage(file))
+              }}
+              onBlur={() => {
+                setTouched((prev) => ({ ...prev, profileImage: true }))
+                setErrorProfileImage(validateProfileImage(profileImage))
+              }}
+            />
+            {errorProfileImage && <span className="auth-error">{errorProfileImage}</span>}
           </div>
           <button type="submit" className="auth-submit" disabled={!isFormValid}>
             Create account
