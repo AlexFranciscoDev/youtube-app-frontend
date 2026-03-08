@@ -1,67 +1,57 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import "./AuthForm.css";
-import { validateEmail, validatePassword } from "../utils/validators";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router";
-import { Global } from "../helpers/Global";
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlay } from '@fortawesome/free-solid-svg-icons'
+import './AuthForm.css'
+import { validateEmail, validatePassword } from '../utils/validators'
+import { useAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router'
+import { Global } from '../helpers/Global'
+import { PasswordInput } from '../components/PasswordInput'
 
 export const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorEmail, setErrorEmail] = useState("");
-  const [errorPassword, setErrorPassword] = useState("");
-  const [touched, setTouched] = useState({ email: false, password: false });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorUser, setErrorUser] = useState("");
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errorEmail, setErrorEmail] = useState('')
+  const [errorPassword, setErrorPassword] = useState('')
+  const [touched, setTouched] = useState({ email: false, password: false })
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorUser, setErrorUser] = useState('')
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const emailError = validateEmail(email);
-    const passwordError = validatePassword(password);
-    setErrorEmail(emailError);
-    setErrorPassword(passwordError);
-    setTouched({ email: true, password: true });
-    if (emailError || passwordError) return;
-    // Set loading before fetching the data
-    setIsLoading(true);
+    event.preventDefault()
+    const emailError = validateEmail(email)
+    const passwordError = validatePassword(password)
+    setErrorEmail(emailError)
+    setErrorPassword(passwordError)
+    setTouched({ email: true, password: true })
+    if (emailError || passwordError) return
 
+    setIsLoading(true)
     try {
-      // Call the API
-      const response = await fetch(Global.url + "user/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch(Global.url + 'user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      // Set error message if there's any
-      if (data.status === "Error") {
-        setErrorUser(data.message);
-        return;
+      })
+      const data = await response.json()
+      if (data.status === 'Error') {
+        setErrorUser(data.message)
+        return
       }
-      // In case there was already an error. Clean the state
-      setErrorUser("");
-      // Add the data to local storage
-      login(data.user, data.token);
-      // Redirect to main page.
-      navigate("/");
+      setErrorUser('')
+      login(data.user, data.token)
+      navigate('/')
     } catch (error: unknown) {
-      setErrorUser(error instanceof Error ? error.message : "An error occurred");
+      setErrorUser(error instanceof Error ? error.message : 'An error occurred')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
-  const isFormValid = !errorEmail && !errorPassword;
-
-  const passwordType = showPassword ? "text" : "password";
-  const passwordLabel = showPassword ? "Hide password" : "Show password";
-  const passwordIcon = showPassword ? faEyeSlash : faEye;
+  const isFormValid = !errorEmail && !errorPassword
 
   return (
     <div className="auth-page">
@@ -77,27 +67,23 @@ export const Login = () => {
           <FontAwesomeIcon icon={faPlay} />
         </div>
         <h1 className="auth-title">Welcome back</h1>
-        <p className="auth-description">
-          Sign in to your Video Organizer account
-        </p>
+        <p className="auth-description">Sign in to your Video Organizer account</p>
         {errorUser && <span className="auth-error">{errorUser}</span>}
-
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
             <label htmlFor="email">Email</label>
             <input
               id="email"
-              className={`auth-input${errorEmail ? " auth-input--error" : ""}`}
+              className={`auth-input${errorEmail ? ' auth-input--error' : ''}`}
               type="email"
               placeholder="tu@email.com"
-              onChange={(event) => {
-                setEmail(event.target.value);
-                if (touched.email)
-                  setErrorEmail(validateEmail(event.target.value));
+              onChange={(e) => {
+                setEmail(e.target.value)
+                if (touched.email) setErrorEmail(validateEmail(e.target.value))
               }}
-              onBlur={(event) => {
-                setTouched((prev) => ({ ...prev, email: true }));
-                setErrorEmail(validateEmail(event.target.value));
+              onBlur={(e) => {
+                setTouched((prev) => ({ ...prev, email: true }))
+                setErrorEmail(validateEmail(e.target.value))
               }}
             />
             {errorEmail && <span className="auth-error">{errorEmail}</span>}
@@ -105,50 +91,32 @@ export const Login = () => {
           <div className="auth-field">
             <div className="auth-label-row">
               <label htmlFor="password">Password</label>
-              <a href="#" className="auth-link">
-                Forgot your password?
-              </a>
+              <a href="#" className="auth-link">Forgot your password?</a>
             </div>
-            <div className="password-wrapper">
-              <input
-                id="password"
-                className={`auth-input${errorPassword ? " auth-input--error" : ""}`}
-                type={passwordType}
-                placeholder="*******"
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                  if (touched.password)
-                    setErrorPassword(validatePassword(event.target.value));
-                }}
-                onBlur={(event) => {
-                  setTouched((prev) => ({ ...prev, password: true }));
-                  setErrorPassword(validatePassword(event.target.value));
-                }}
-              />
-              <button
-                type="button"
-                aria-label={passwordLabel}
-                className="password-toggle"
-                onClick={() => setShowPassword((prev) => !prev)}
-              >
-                <FontAwesomeIcon icon={passwordIcon} />
-              </button>
-            </div>
-            {errorPassword && (
-              <span className="auth-error">{errorPassword}</span>
-            )}
+            <PasswordInput
+              id="password"
+              hasError={!!errorPassword}
+              ariaLabel={errorPassword ? 'Hide password' : 'Show password'}
+              onChange={(value) => {
+                setPassword(value)
+                if (touched.password) setErrorPassword(validatePassword(value))
+              }}
+              onBlur={(value) => {
+                setTouched((prev) => ({ ...prev, password: true }))
+                setErrorPassword(validatePassword(value))
+              }}
+            />
+            {errorPassword && <span className="auth-error">{errorPassword}</span>}
           </div>
           <button type="submit" className="auth-submit" disabled={!isFormValid || isLoading}>
             Sign in
           </button>
         </form>
         <p className="auth-footer">
-          Don't have an account?{" "}
-          <Link to="/register" className="auth-link">
-            Sign up
-          </Link>
+          Don't have an account?{' '}
+          <Link to="/register" className="auth-link">Sign up</Link>
         </p>
       </section>
     </div>
-  );
-};
+  )
+}
