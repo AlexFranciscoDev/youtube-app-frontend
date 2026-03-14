@@ -24,6 +24,7 @@ export const Register = () => {
   const [errorConfirmPassword, setErrorConfirmPassword] = useState('')
   const [errorProfileImage, setErrorProfileImage] = useState('')
   const [submitMessage, setSubmitMessage] = useState<{ text: string; isError: boolean } | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [touched, setTouched] = useState({
     username: false,
@@ -50,6 +51,7 @@ export const Register = () => {
 
     if (usernameError || emailError || passwordError || confirmPasswordError || profileImageError) return
 
+    setIsLoading(true)
     try {
       const formData = new FormData()
       formData.append('username', username)
@@ -72,6 +74,8 @@ export const Register = () => {
       setTimeout(() => navigate('/login'), 2000)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -80,6 +84,13 @@ export const Register = () => {
   return (
     <div className="auth-page">
       <section className="auth-card">
+        {isLoading && (
+          <div className="auth-overlay" aria-live="polite">
+            <div className="auth-spinner" role="status" aria-label="Loading">
+              <span className="auth-spinner__dot" />
+            </div>
+          </div>
+        )}
         <div className="auth-icon">
           <FontAwesomeIcon icon={faPlay} />
         </div>
@@ -190,8 +201,8 @@ export const Register = () => {
               <img src={previewSrc} alt="Profile preview" className="profile-preview" />
             </div>
           )}
-          <button type="submit" className="auth-submit" disabled={!isFormValid}>
-            Create account
+          <button type="submit" className="auth-submit" disabled={!isFormValid || isLoading}>
+            {isLoading ? 'Creating account...' : 'Create account'}
           </button>
         </form>
         <p className="auth-footer">
