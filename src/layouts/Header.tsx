@@ -28,7 +28,7 @@ export const Header = () => {
                             <div className='flex gap-5 justify-center items-center'>
                                 {/* <span>Hola,{user?.name}</span> */}
                                 <Link to="/profile">Perfil</Link>
-                                <button>
+                                <button onClick={logout}>
                                     Logout
                                 </button>
                             </div>

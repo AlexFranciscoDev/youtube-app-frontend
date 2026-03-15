@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import { Routing } from './router/Routing.tsx';
 import { BrowserRouter } from 'react-router-dom';
@@ -7,11 +6,11 @@ import { AuthProvider } from "./context/AuthProvider";
 function App() {
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routing />
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
 
