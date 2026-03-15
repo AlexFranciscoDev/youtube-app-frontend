@@ -37,6 +37,7 @@ export const Login = () => {
         body: JSON.stringify({ email, password }),
       })
       const data = await response.json()
+      console.log(data);
       if (data.status === 'Error') {
         setErrorUser(data.message)
         return
