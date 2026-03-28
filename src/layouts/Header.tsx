@@ -2,6 +2,7 @@ import React from 'react';
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { GlobalUploads } from "../helpers/Global";
 
 interface HeaderProps {
     children?: ReactNode;
@@ -9,6 +10,7 @@ interface HeaderProps {
 
 export const Header = () => {
     const { isLoggedIn, user, logout } = useAuth();
+    //devuelconsole.log(user.image);
 
     return (
         <header className='header bg-[var(--background-card)]'>
@@ -26,9 +28,11 @@ export const Header = () => {
                     ) :
                         (
                             <div className='flex gap-5 justify-center items-center'>
-                                <span>Hola,{user?.name}</span>
+                                {/* <span>Hola,{user?.name}</span> */}
                                 <Link to="/profile">Perfil</Link>
-                                <button>
+                                <span>@{user?.username}</span>
+                                <img src={GlobalUploads.url + "others/" + user?.image} alt="profile_picture" className="w-13 h-13 object-cover rounded-full"/>
+                                <button onClick={logout}>
                                     Logout
                                 </button>
                             </div>

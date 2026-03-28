@@ -1,18 +1,20 @@
 import { createContext, useContext } from "react";
 
 // Define user data
-interface User {
+export interface User {
     id: string;
-    name: string;
+    username: string;
     email: string;
+    image?: string
 }
 
 // Define Context content (the box)
 interface AuthContextType {
     isLoggedIn: boolean;
-    user: User | null; // user data or null if ders no user logged in
-    login: (name: string, email: string) => void; // Receives name and email, and returns nothing (void)
-    logout: () => void; // No parameters and return nothing
+    user: User | null; 
+    login: (user: User, token: string) => void;
+    logout: () => void; 
+    token: string | null;
 }
 
 // Define the context (empty box)
