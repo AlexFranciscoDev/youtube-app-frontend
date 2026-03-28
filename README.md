@@ -71,3 +71,21 @@ export default defineConfig([
   },
 ])
 ```
+
+## Testing Workshop
+
+This repo includes a guided learning path for testing the auth forms with Vitest and Testing Library.
+
+Start here:
+
+- [src/docs/TestingWorkshop.md](/Users/alexft/Documents/frontend/youtube-app-frontend/src/docs/TestingWorkshop.md)
+- [src/utils/validators.test.ts](/Users/alexft/Documents/frontend/youtube-app-frontend/src/utils/validators.test.ts)
+- [src/test/login.exercise.tsx](/Users/alexft/Documents/frontend/youtube-app-frontend/src/test/login.exercise.tsx)
+- [src/test/register.exercise.tsx](/Users/alexft/Documents/frontend/youtube-app-frontend/src/test/register.exercise.tsx)
+
+Useful commands:
+
+```bash
+npm run test
+npm run test:run
+```

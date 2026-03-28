@@ -1,12 +1,6 @@
-import React from 'react';
-import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { GlobalUploads } from "../helpers/Global";
-
-interface HeaderProps {
-    children?: ReactNode;
-}
 
 export const Header = () => {
     const { isLoggedIn, user, logout } = useAuth();
