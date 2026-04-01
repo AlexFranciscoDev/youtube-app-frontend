@@ -30,6 +30,11 @@ describe("Login component", () => {
       </MemoryRouter>,
     );
   });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("Render component", () => {
     const title = screen.getByText("Welcome back");
     const text = screen.getByText("Sign in to your Video Organizer account");
@@ -67,12 +72,12 @@ describe("Login component", () => {
   });
 
   it("shows the backend error message when the user does not exist", async () => {
-      vi.spyOn(global, "fetch").mockResolvedValueOnce({
-        json: async () => ({
-          status: "Error",
-          message: "User not found",
-        }),
-      } as Response);
+    vi.spyOn(global, "fetch").mockResolvedValueOnce({
+      json: async () => ({
+        status: "Error",
+        message: "User not found",
+      }),
+    } as Response);
     const emailInput = screen.getByLabelText("Email");
     const passwordInput = screen.getByLabelText("Password");
     const submitBtn = screen.getByRole("button", { name: /Sign in/ });
@@ -80,5 +85,20 @@ describe("Login component", () => {
     fireEvent.change(passwordInput, { target: { value: "1232141" } });
     fireEvent.click(submitBtn);
     expect(await screen.findByText("User not found")).toBeInTheDocument();
+  });
+
+  it("Show errors and doesnt't fetch if the form is not valid", async () => {
+    const fetchSpy = vi.spyOn(global, "fetch").mockImplementation(vi.fn());
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
+    const submitBtn = screen.getByRole("button", { name: /Sign in/ });
+    fireEvent.change(emailInput, { target: { value: "adsedqw@dawdw.com" } });
+    fireEvent.change(passwordInput, { target: { value: "123" } });
+    fireEvent.click(submitBtn);
+    const errorPassword = await screen.findByText(
+      "Password must be at least 5 characters",
+    );
+    expect(errorPassword).toBeInTheDocument();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 });
