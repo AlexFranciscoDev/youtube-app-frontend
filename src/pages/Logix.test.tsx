@@ -3,12 +3,16 @@ import { MemoryRouter } from "react-router-dom";
 import { Login } from "./Login";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { AuthProvider } from "../context/AuthProvider";
+import userEvent from "@testing-library/user-event";
+import * as AuthContextModule from "../context/AuthContext";
+
+const navigateMock = vi.fn();
 
 vi.mock("react-router-dom", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react-router-dom")>();
   return {
     ...actual,
-    useNavigate: () => vi.fn(),
+    useNavigate: () => navigateMock,
   };
 });
 
@@ -16,7 +20,7 @@ vi.mock("react-router", async (importOriginal) => {
   const actual = await importOriginal<typeof import("react-router")>();
   return {
     ...actual,
-    useNavigate: () => vi.fn(),
+    useNavigate: () => navigateMock,
   };
 });
 
@@ -33,9 +37,10 @@ describe("Login component", () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+    navigateMock.mockReset();
   });
 
-  it("Render component", () => {
+  it("Render login component", () => {
     const title = screen.getByText("Welcome back");
     const text = screen.getByText("Sign in to your Video Organizer account");
     const emailInput = screen.getByLabelText("Email");
@@ -64,6 +69,15 @@ describe("Login component", () => {
     expect(error).toBeInTheDocument();
   });
 
+  it("Password is not valid", () => {
+    const passwordInput = screen.getByLabelText("Password");
+    const submitBtn = screen.getByRole("button", { name: /Sign in/ });
+    fireEvent.change(passwordInput, { target: { value: "12" } });
+    fireEvent.click(submitBtn);
+    const error = screen.getByText("Password must be at least 5 characters");
+    expect(error).toBeInTheDocument();
+  });
+
   it("Password is required", () => {
     const passwordInput = screen.getByLabelText("Password");
     fireEvent.blur(passwordInput);
@@ -71,7 +85,7 @@ describe("Login component", () => {
     expect(error).toBeInTheDocument();
   });
 
-  it("shows the backend error message when the user does not exist", async () => {
+  it("shows the backend error message when the User is not found", async () => {
     vi.spyOn(global, "fetch").mockResolvedValueOnce({
       json: async () => ({
         status: "Error",
@@ -100,5 +114,141 @@ describe("Login component", () => {
     );
     expect(errorPassword).toBeInTheDocument();
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("Checks that fetch calls the right data", async () => {
+    const user = userEvent.setup();
+    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
+      json: async () => ({
+        status: "Success",
+        user: {
+          id: "1",
+          name: "Alex",
+          email: "alex@alex.com",
+        },
+        token: "fake-token",
+      }),
+    } as Response);
+
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
+    const submitBtn = screen.getByRole("button", { name: /Sign in/ });
+
+    await user.type(emailInput, "alex@alex.com");
+    await user.type(passwordInput, "123456");
+    await user.click(submitBtn);
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    const [url, options] = fetchSpy.mock.calls[0];
+    const body = JSON.parse(options?.body as string);
+
+    expect(url).toBe("http://localhost:3000/api/user/login");
+    expect(options?.method).toBe("POST");
+    expect(options?.headers).toEqual({
+      "Content-Type": "application/json",
+    });
+    expect(body).toEqual({
+      email: "alex@alex.com",
+      password: "123456",
+    });
+  });
+
+  it("calls login with the user and token when the backend responds successfully", async () => {
+    const user = userEvent.setup();
+
+    const loginMock = vi.fn();
+
+    vi.spyOn(AuthContextModule, "useAuth").mockReturnValue({
+      isLoggedIn: false,
+      user: null,
+      token: null,
+      login: loginMock,
+      logout: vi.fn(),
+    });
+
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
+      json: async () => ({
+        status: "Success",
+        user: {
+          id: "1",
+          username: "Alex",
+          email: "alex@alex.com",
+        },
+        token: "fake-token",
+      }),
+    } as Response);
+
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
+    const submitBtn = screen.getByRole("button", { name: /Sign in/ });
+
+    await user.type(emailInput, "alex@alex.com");
+    await user.type(passwordInput, "123456");
+    await user.click(submitBtn);
+
+    expect(loginMock).toHaveBeenCalledTimes(1);
+    expect(loginMock).toHaveBeenCalledWith(
+      {
+        id: "1",
+        username: "Alex",
+        email: "alex@alex.com",
+      },
+      "fake-token",
+    );
+  });
+
+  it("navigates to home when login succeeds", async () => {
+    const user = userEvent.setup();
+
+    vi.spyOn(AuthContextModule, "useAuth").mockReturnValue({
+      isLoggedIn: false,
+      user: null,
+      token: null,
+      login: vi.fn(),
+      logout: vi.fn(),
+    });
+
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
+      json: async () => ({
+        status: "Success",
+        user: {
+          id: "1",
+          username: "Alex",
+          email: "alex@alex.com",
+        },
+        token: "fake-token",
+      }),
+    } as Response);
+
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
+    const submitBtn = screen.getByRole("button", { name: /Sign in/i });
+
+    await user.type(emailInput, "alex@alex.com");
+    await user.type(passwordInput, "123456");
+    await user.click(submitBtn);
+
+    expect(navigateMock).toHaveBeenCalledTimes(1);
+    expect(navigateMock).toHaveBeenCalledWith("/");
+  });
+
+  it("shows the fetch error message when the request fails", async () => {
+    const user = userEvent.setup();
+
+    vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(
+      new Error("Network error"),
+    );
+
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
+    const submitBtn = screen.getByRole("button", { name: /Sign in/i });
+
+    await user.type(emailInput, "alex@alex.com");
+    await user.type(passwordInput, "123456");
+    await user.click(submitBtn);
+
+    expect(await screen.findByText("Network error")).toBeInTheDocument();
+    expect(navigateMock).not.toHaveBeenCalled();
   });
 });
