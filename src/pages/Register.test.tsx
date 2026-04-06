@@ -101,28 +101,79 @@ describe("Register component", () => {
 
   describe("Email validation", () => {
     it("Check that email field is not empty", () => {
-        const email = screen.getByLabelText("Email");
-        fireEvent.blur(email);
-        const errorEmail = screen.getByText("Email is required");
-        expect(errorEmail).toBeInTheDocument();
-    })
+      const email = screen.getByLabelText("Email");
+      fireEvent.blur(email);
+      const errorEmail = screen.getByText("Email is required");
+      expect(errorEmail).toBeInTheDocument();
+    });
 
     it("Check that the email format has correct format", async () => {
-        const user = userEvent.setup();
-        const email = screen.getByLabelText("Email");
-        await user.type(email, "notanemail");
-        fireEvent.blur(email);
-        const errorEmail = screen.getByText("Invalid email format");
-        expect(errorEmail).toBeInTheDocument();
-    })
+      const user = userEvent.setup();
+      const email = screen.getByLabelText("Email");
+      await user.type(email, "notanemail");
+      fireEvent.blur(email);
+      const errorEmail = screen.getByText("Invalid email format");
+      expect(errorEmail).toBeInTheDocument();
+    });
 
     it("Check email has a correct format", async () => {
+      const user = userEvent.setup();
+      const email = screen.getByLabelText("Email");
+      await user.type(email, "user@test.com");
+      fireEvent.blur(email);
+      expect(screen.queryByText("Email is required")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Invalid email format"),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Password validation", () => {
+    it("Check that password field is not empty", () => {
+      const password = screen.getByLabelText("Password");
+      fireEvent.blur(password);
+      const errorPassword = screen.getByText("Password is required");
+      expect(errorPassword).toBeInTheDocument();
+    });
+
+    it("Check that password length is correct", async () => {
+      const user = userEvent.setup();
+      const password = screen.getByLabelText("Password");
+      await user.type(password, "123");
+      fireEvent.blur(password);
+      const errorPassword = screen.getByText("Password must be at least 5 characters");
+      expect(errorPassword).toBeInTheDocument();
+    });
+
+    it("Check that confirm password field is not empty", () => {
+      const confirmPassword = screen.getByLabelText("Confirm password");
+      fireEvent.blur(confirmPassword);
+      const errorConfirmPassword = screen.getByText("Please confirm your password");
+      expect(errorConfirmPassword).toBeInTheDocument();
+    });
+
+    it("Check that password and confirm password match", async () => {
         const user = userEvent.setup();
-        const email = screen.getByLabelText("Email");
-        await user.type(email, "user@test.com");
-        fireEvent.blur(email);
-        expect(screen.queryByText("Email is required")).not.toBeInTheDocument();
-        expect(screen.queryByText("Invalid email format")).not.toBeInTheDocument();
+        const password = screen.getByLabelText("Password");
+        const confirmPassword = screen.getByLabelText("Confirm password");
+        await user.type(password, "12345");
+        await user.type(confirmPassword, "99999");
+        fireEvent.blur(confirmPassword);
+        const error = screen.getByText("Passwords do not match");
+        expect(error).toBeInTheDocument();
     })
-  })
+
+    it("Check password and confirm password are valid", async () => {
+        const user = userEvent.setup();
+        const password = screen.getByLabelText("Password");
+        const confirmPassword = screen.getByLabelText("Confirm password");
+        await user.type(password, "12345");
+        await user.type(confirmPassword, "12345");
+        fireEvent.blur(confirmPassword);
+        expect(screen.queryByText("Password is required")).not.toBeInTheDocument();
+        expect(screen.queryByText("Password must be at least 5 characters")).not.toBeInTheDocument();
+        expect(screen.queryByText("Please confirm your password")).not.toBeInTheDocument();
+        expect(screen.queryByText("Passwords do not match")).not.toBeInTheDocument();
+    })
+  });
 });
