@@ -98,4 +98,31 @@ describe("Register component", () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  describe("Email validation", () => {
+    it("Check that email field is not empty", () => {
+        const email = screen.getByLabelText("Email");
+        fireEvent.blur(email);
+        const errorEmail = screen.getByText("Email is required");
+        expect(errorEmail).toBeInTheDocument();
+    })
+
+    it("Check that the email format has correct format", async () => {
+        const user = userEvent.setup();
+        const email = screen.getByLabelText("Email");
+        await user.type(email, "notanemail");
+        fireEvent.blur(email);
+        const errorEmail = screen.getByText("Invalid email format");
+        expect(errorEmail).toBeInTheDocument();
+    })
+
+    it("Check email has a correct format", async () => {
+        const user = userEvent.setup();
+        const email = screen.getByLabelText("Email");
+        await user.type(email, "user@test.com");
+        fireEvent.blur(email);
+        expect(screen.queryByText("Email is required")).not.toBeInTheDocument();
+        expect(screen.queryByText("Invalid email format")).not.toBeInTheDocument();
+    })
+  })
 });
