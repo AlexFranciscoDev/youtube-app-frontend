@@ -212,6 +212,9 @@ describe("Register component", () => {
         revokeObjectURL: vi.fn(),
       });
     });
+    afterEach(() => {
+      vi.unstubAllGlobals()
+    })
     it("Display picture review", () => {
       // Create fake file
       const fakeFile = new File(["fake content"], "profile-picture.png", {
