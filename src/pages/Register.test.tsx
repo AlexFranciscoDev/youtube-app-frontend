@@ -227,5 +227,33 @@ describe("Register component", () => {
       const preview = screen.getByAltText("Profile preview");
       expect(preview).toHaveAttribute("src", "blob:fake-url");
     });
+
+    it("Show error message when fetching", async () => {
+      // Mock fetching
+      const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
+        json: async () => ({
+          status: "Error",
+          message: "Email already registered"
+        })
+      } as Response)
+      const fakeFile = new File(["fake content"], "profile-picture.png", {
+        type: "image/png",
+      });
+      const user = userEvent.setup();
+      const username = screen.getByLabelText("Username");
+      const email = screen.getByLabelText("Email");
+      const password = screen.getByLabelText("Password");
+      const confirmPassword = screen.getByLabelText("Confirm password");
+      const inputImage = screen.getByLabelText("Profile image");
+      const button = screen.getByRole("button", {name: /Create account/i});
+      await user.type(username, "Alex123");
+      await user.type(email, "alex@alex.com");
+      await user.type(password, "123456");
+      await user.type(confirmPassword, "123456");
+      fireEvent.change(inputImage, { target: { files: [fakeFile] } });
+      fireEvent.click(button);
+      expect(await screen.findByText("Email already registered")).toBeInTheDocument();
+      expect(fetchSpy).toHaveBeenCalledOnce();
+    })
   });
 });
