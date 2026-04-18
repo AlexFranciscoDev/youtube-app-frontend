@@ -46,7 +46,6 @@
   border-radius: 999px;
   backdrop-filter: blur(6px);
   letter-spacing: 0.03em;
-  text-transform: lowercase;
 }
 
 /* Body */
@@ -84,6 +83,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
 }
 
 .vcard__tag {
@@ -97,6 +99,7 @@
   font-weight: 500;
   padding: 0.2rem 0.65rem;
   border-radius: 999px;
+  opacity: 1;
 }
 
 .vcard__icon {
