@@ -22,9 +22,6 @@ const formatDateEnglish = (dateProp: string) => {
 }
 
 const VideoCard = (video: VideoCardProps) => {
-    // TODO: Entrar a mongodb o postman y crear varios videos de prueba
-    // TODO: Fecha formateada
-    // Format dsate
     const videoDate = formatDateEnglish(video.createdAt);
     const GlobalUploads = "http://localhost:3000/uploads/videos/";
     const thumbnail = video.image;
