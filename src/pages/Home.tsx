@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faMagnifyingGlass, faFilter, faTableCells, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass, faFilter, faTableCells, faBars } from '@fortawesome/free-solid-svg-icons'
 import VideoCard from '../components/VideoCard';
 import './Home.css'
 
@@ -15,19 +15,11 @@ type Video = {
   createdAt: string
 }
 
-/**
- * user: string,
-    title: string,
-    url: string,
-    category: string,
-    platform: string,
-    image: string,
-    createdAt: string
- */
-
 export const Home = () => {
   const token = localStorage.getItem("token");
   const [videos, setVideos] = useState<Video[]>([]);
+
+  // TODO: show error and loading
 
   useEffect(() => {
     getVideos();

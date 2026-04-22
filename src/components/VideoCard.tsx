@@ -1,4 +1,3 @@
-import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faTag, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { GlobalUploads } from '../helpers/Global'
