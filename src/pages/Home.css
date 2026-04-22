@@ -34,9 +34,9 @@
 
 .home__search {
   width: 100%;
-  background: rgba(14, 9, 30, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #fefcff;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  color: #111827;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
   border-radius: 999px;
   font-size: 0.9rem;
@@ -45,13 +45,13 @@
 }
 
 .home__search::placeholder {
-  color: #8a839a;
+  color: #9CA3AF;
 }
 
 .home__search:focus {
   outline: none;
-  border-color: rgba(147, 138, 255, 0.6);
-  box-shadow: 0 0 0 2px rgba(140, 128, 255, 0.2);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(122, 96, 192, 0.12);
 }
 
 .home__controls {
@@ -65,9 +65,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(14, 9, 30, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #c2bcdf;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  color: #374151;
   font-size: 0.85rem;
   padding: 0.6rem 1rem;
   border-radius: 999px;
@@ -77,9 +77,9 @@
 }
 
 .home__filter-btn:hover {
-  border-color: rgba(147, 138, 255, 0.5);
-  color: #f5f4ff;
-  background: rgba(14, 9, 30, 0.95);
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+  background: #ffffff;
   transform: none;
   box-shadow: none;
 }
@@ -87,8 +87,8 @@
 /* View toggle */
 .home__view-toggle {
   display: flex;
-  background: rgba(14, 9, 30, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #F3F4F6;
+  border: 1px solid var(--color-border);
   border-radius: 999px;
   overflow: hidden;
   padding: 0.2rem;
@@ -97,7 +97,7 @@
 
 .home__view-btn {
   background: transparent;
-  color: #8a839a;
+  color: #9CA3AF;
   border: none;
   padding: 0.4rem 0.65rem;
   border-radius: 999px;
@@ -107,8 +107,8 @@
 }
 
 .home__view-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #f5f4ff;
+  background: #ffffff;
+  color: #374151;
   transform: none;
   box-shadow: none;
 }
@@ -137,7 +137,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: #c2bcdf;
+  color: #374151;
   cursor: pointer;
   user-select: none;
 }
@@ -154,7 +154,7 @@
 
 .home__count {
   font-size: 0.85rem;
-  color: #8a839a;
+  color: #9CA3AF;
 }
 
 /* ── Grid ── */

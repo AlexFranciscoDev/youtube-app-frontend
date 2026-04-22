@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { GlobalUploads } from "../helpers/Global";
+import "../assets/css/header.css";
 
 export const Header = () => {
     const { isLoggedIn, user, logout } = useAuth();
     //devuelconsole.log(user.image);
 
     return (
-        <header className='header bg-[var(--background-card)]'>
+        <header className='header'>
             <div className=" layout-container mx-auto flex flex-col justify-between items-center p-5 sm:flex-row">
                 <div className="header-content flex flex-col gap-2">
                     <h1 className='text-3xl font-bold'>Video Organizer</h1>
