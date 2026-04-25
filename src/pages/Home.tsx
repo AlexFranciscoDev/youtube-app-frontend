@@ -6,10 +6,10 @@ import './Home.css'
 
 type Video = {
   id: string,
-  user: {username: string; email: string},
+  user: { username: string; email: string },
   title: string,
   url: string,
-  category: {name: string, description: string},
+  category: { name: string, description: string },
   platform: string,
   image: string,
   createdAt: string
@@ -18,8 +18,8 @@ type Video = {
 export const Home = () => {
   const token = localStorage.getItem("token");
   const [videos, setVideos] = useState<Video[]>([]);
-
-  // TODO: show error and loading
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     getVideos();
@@ -40,10 +40,13 @@ export const Home = () => {
       });
       if (!response.ok) throw new Error("Error getting the videos");
       const data = await response.json();
-      console.log(data);
       setVideos(data.videos);
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unexpected error';
+      setError(message);
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -87,24 +90,30 @@ export const Home = () => {
           <input type="checkbox" />
           Select all
         </label>
-        <span className="home__count">6 videos found</span>
+        <span className="home__count">{videos.length} videos found</span>
       </div>
 
-      {/* Grid — aquí pondrás el .map() */}
-      <div className="home__grid">
-        {videos.map((video) =>
-          <VideoCard 
-          key={video.id} 
-          user={video.user} 
-          title={video.title} 
-          url={video.url} 
-          category={video.category}
-          platform={video.platform} 
-          image={video.image}
-          createdAt={video.createdAt} 
-        />)
-        }
-      </div>
+
+      {isLoading ?
+        (<p>Loading...</p>)
+        : error ?
+          (<p>{error}</p>)
+          :
+          (<div className="home__grid">
+            {videos.map((video) =>
+              <VideoCard
+                key={video.id}
+                user={video.user}
+                title={video.title}
+                url={video.url}
+                category={video.category}
+                platform={video.platform}
+                image={video.image}
+                createdAt={video.createdAt}
+              />)
+            }
+          </div>)
+      }
 
     </div>
   )
