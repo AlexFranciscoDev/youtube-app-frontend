@@ -102,7 +102,7 @@ export const Home = () => {
           (<div className="home__grid">
             {videos.map((video) =>
               <VideoCard
-                key={video.id}
+                key={video._id}
                 user={video.user}
                 title={video.title}
                 url={video.url}
