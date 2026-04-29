@@ -4,14 +4,17 @@ import { Login } from '../pages/Login.tsx';
 import { Register } from '../pages/Register.tsx';
 import { NotFound } from '../pages/NotFound.tsx';
 import { MainLayout } from "../layouts/MainLayout";
+import ProtectedRoute from '../helpers/ProtectedRoute';
 
 export const Routing = () => {
     return (
         <Routes>
             <Route path="/" element={<MainLayout />}>
-                <Route index element={<Home />} />
-                <Route path='/login' element={<Login />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route index element={<Home />} />
+                </Route>
                 <Route path='/register' element={<Register />} />
+                <Route path='/login' element={<Login />} />
                 <Route path='*' element={<NotFound />} />
             </Route>
         </Routes>
