@@ -44,6 +44,10 @@ export const Upload = () => {
         }
     }
 
+    /**
+     * handle
+     */
+
 
 
     return (
@@ -134,22 +138,30 @@ export const Upload = () => {
                             <div className="upload-field">
                                 <label>Thumbnail</label>
                                 <label htmlFor="upload-image" className="upload-dropzone">
-                                    {/* Mostrar preview si hay imagen — conectar con estado */}
-                                    {/* {previewSrc ? (
-                    <img src={previewSrc} alt="Thumbnail preview" className="upload-preview" />
-                  ) : ( */}
-                                    <div className="upload-dropzone__placeholder">
-                                        <FontAwesomeIcon icon={faCloudArrowUp} className="upload-dropzone__icon" />
-                                        <span className="upload-dropzone__text">Click to upload</span>
-                                        <span className="upload-dropzone__hint">PNG, JPG up to 5MB</span>
-                                    </div>
-                                    {/* )} */}
+                                    {previewSrc ? (
+                                        <img src={previewSrc} alt="Thumbnail preview" className="upload-preview" />
+                                    ) : (
+                                        <div className="upload-dropzone__placeholder">
+                                            <FontAwesomeIcon icon={faCloudArrowUp} className="upload-dropzone__icon" />
+                                            <span className="upload-dropzone__text">Click to upload</span>
+                                            <span className="upload-dropzone__hint">PNG, JPG up to 5MB</span>
+                                        </div>
+                                    )}
                                 </label>
                                 <input
                                     id="upload-image"
                                     type="file"
                                     accept="image/*"
                                     className="upload-file-input"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+                                        setImage(file.name);
+                                        setPreviewSrc((prev) => {
+                                            if (prev) URL.revokeObjectURL(prev)
+                                            return URL.createObjectURL(file)
+                                        });
+                                    }}
                                 />
                             </div>
                         </div>
