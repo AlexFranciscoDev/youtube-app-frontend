@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import {useAuth} from '../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCloudArrowUp, faVideo } from '@fortawesome/free-solid-svg-icons'
 import './Upload.css'
 import { Global } from '../helpers/Global';
 
 export const Upload = () => {
+    const {user} = useAuth();
     const token = localStorage.getItem("token");
     const [categories, setCategories] = useState<{_id:string, name:string}[]>([]);
     const [title, setTitle] = useState<string>('');
@@ -13,7 +15,7 @@ export const Upload = () => {
     const [platform, setPlatform] = useState<string>('');
     const [category, setCategory] = useState<string>('');
     const [image, setImage] = useState<string>('');
-    const [previewSrc, setPreviewSrc] = useState<string>('');
+    const [previewSrc, setPreviewSrc] = useState<File>(null);
     const [isLoading, setIsLoading] = useState<string>('');
 
     useEffect(() => {
@@ -45,9 +47,33 @@ export const Upload = () => {
     }
 
     /**
-     * handle
+     * handleSubmit
      */
-
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('user', user!.id);
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('url', url);
+        formData.append('category', category);
+        formData.append('platform', platform);
+        formData.append('image', image);
+        
+        try {
+            const response = await fetch(Global.url + 'video', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    Authorization: token ?? ''
+                }
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 
     return (
@@ -70,7 +96,7 @@ export const Upload = () => {
           </span>
         )} */}
 
-                <form className="upload-form" onSubmit={(e) => e.preventDefault()}>
+                <form className="upload-form" onSubmit={handleSubmit}>
                     <div className="upload-grid">
 
                         {/* ── Columna izquierda ── */}
@@ -105,7 +131,7 @@ export const Upload = () => {
                                     className="upload-input"
                                     type="url"
                                     placeholder="https://youtube.com/watch?v=..."
-                                    onChange={(e) => {setUrl(e.target.value); console.log(url)}}
+                                    onChange={(e) => {setUrl(e.target.value);}}
                                 />
                             </div>
 
@@ -113,11 +139,9 @@ export const Upload = () => {
                                 <label htmlFor="upload-platform">Platform</label>
                                 <select id="upload-platform" className="upload-select" onChange={(e) => {setPlatform(e.target.value)}}>
                                     <option value="">Select a platform</option>
-                                    <option value="youtube">YouTube</option>
-                                    <option value="tiktok">TikTok</option>
-                                    <option value="instagram">Instagram</option>
-                                    <option value="twitter">Twitter / X</option>
-                                    <option value="vimeo">Vimeo</option>
+                                    <option value="Youtube">YouTube</option>
+                                    <option value="TikTok">TikTok</option>
+                                    <option value="Instagram">Instagram</option>
                                 </select>
                             </div>
 
@@ -159,7 +183,7 @@ export const Upload = () => {
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
                                         if (!file) return;
-                                        setImage(file.name);
+                                        setImage(file);
                                         setPreviewSrc((prev) => {
                                             if (prev) URL.revokeObjectURL(prev)
                                             return URL.createObjectURL(file)
