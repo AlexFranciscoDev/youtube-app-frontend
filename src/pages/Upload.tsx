@@ -30,7 +30,7 @@ export const Upload = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: token
+                    Authorization: token ?? ''
                 }
             });
             const result = await response.json();
@@ -83,6 +83,7 @@ export const Upload = () => {
                                     className="upload-input"
                                     type="text"
                                     placeholder="Video title"
+                                    onChange={(e)=> {setTitle(e.target.value);}}
                                 />
                             </div>
 
@@ -93,6 +94,7 @@ export const Upload = () => {
                                     className="upload-textarea"
                                     placeholder="What is this video about?"
                                     rows={4}
+                                    onChange={(e) => {setDescription(e.target.value);}}
                                 />
                             </div>
 
@@ -103,12 +105,13 @@ export const Upload = () => {
                                     className="upload-input"
                                     type="url"
                                     placeholder="https://youtube.com/watch?v=..."
+                                    onChange={(e) => {setUrl(e.target.value); console.log(url)}}
                                 />
                             </div>
 
                             <div className="upload-field">
                                 <label htmlFor="upload-platform">Platform</label>
-                                <select id="upload-platform" className="upload-select">
+                                <select id="upload-platform" className="upload-select" onChange={(e) => {setPlatform(e.target.value)}}>
                                     <option value="">Select a platform</option>
                                     <option value="youtube">YouTube</option>
                                     <option value="tiktok">TikTok</option>
@@ -120,7 +123,7 @@ export const Upload = () => {
 
                             <div className="upload-field">
                                 <label htmlFor="upload-category">Category</label>
-                                <select id="upload-category" className="upload-select">
+                                <select id="upload-category" className="upload-select" onChange={(e) => {setCategory(e.target.value)}}>
                                     <option value="">Select a category</option>
                                     {/* Conectar con fetch de /api/category */}
                                     {
