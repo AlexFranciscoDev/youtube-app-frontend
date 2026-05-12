@@ -14,8 +14,8 @@ export const Upload = () => {
     const [url, setUrl] = useState<string>('');
     const [platform, setPlatform] = useState<string>('');
     const [category, setCategory] = useState<string>('');
-    const [image, setImage] = useState<string>('');
-    const [previewSrc, setPreviewSrc] = useState<File>(null);
+    const [image, setImage] = useState<File | null>(null);
+    const [previewSrc, setPreviewSrc] = useState<string>('');
     const [isLoading, setIsLoading] = useState<string>('');
 
     useEffect(() => {
@@ -36,6 +36,7 @@ export const Upload = () => {
                 }
             });
             const result = await response.json();
+            console.log(result);
             const names = result.categories.map((category: {_id: string, name: string}) => ({
                 _id: category._id,
                 name: category.name
@@ -44,6 +45,13 @@ export const Upload = () => {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    /**
+     * validateForm
+     */
+    const validateForm = () => {
+        
     }
 
     /**
@@ -58,7 +66,7 @@ export const Upload = () => {
         formData.append('url', url);
         formData.append('category', category);
         formData.append('platform', platform);
-        formData.append('image', image);
+        if (image) formData.append('image', image);
         
         try {
             const response = await fetch(Global.url + 'video', {
