@@ -19,10 +19,12 @@ export const Upload = () => {
         errors,
         previewSrc,
         isSubmitting,
+        isThumbnailLoading,
         setIsSubmitting,
         handleTextChange,
         handleImageChange,
         handleBlur,
+        handleUrlBlur,
         validateForm,
     } = useUploadForm()
 
@@ -169,7 +171,7 @@ export const Upload = () => {
                                     placeholder="https://youtube.com/watch?v=..."
                                     value={values.url}
                                     onChange={handleTextChange}
-                                    onBlur={() => handleBlur('url')}
+                                    onBlur={handleUrlBlur}
                                 />
                                 {errors.url && <span className="upload-error">{errors.url}</span>}
                             </div>
@@ -223,7 +225,11 @@ export const Upload = () => {
                                     htmlFor="upload-image"
                                     className={`upload-dropzone${errors.image ? ' upload-dropzone--error' : ''}`}
                                 >
-                                    {previewSrc ? (
+                                    {isThumbnailLoading ? (
+                                        <div className="upload-dropzone__placeholder">
+                                            <span className="upload-dropzone__text">Fetching thumbnail…</span>
+                                        </div>
+                                    ) : previewSrc ? (
                                         <img src={previewSrc} alt="Thumbnail preview" className="upload-preview" />
                                     ) : (
                                         <div className="upload-dropzone__placeholder">
