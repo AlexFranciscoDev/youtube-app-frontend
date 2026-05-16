@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {useAuth} from '../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCloudArrowUp, faVideo } from '@fortawesome/free-solid-svg-icons'
+import { faCloudArrowUp, faVideo, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import './Upload.css'
 import { Global } from '../helpers/Global';
 import { useUploadForm } from '../hooks/useUploadForm';
@@ -11,6 +11,7 @@ export const Upload = () => {
     const {user} = useAuth();
     const token = localStorage.getItem("token");
     const [categories, setCategories] = useState<{_id:string, name:string}[]>([]);
+    const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
     const {
         values,
         errors,
@@ -81,7 +82,7 @@ export const Upload = () => {
                 }
             });
             const data = await response.json();
-            console.log(data);
+            setUploadSuccess(true);
         } catch (error) {
             console.log(error);
         } finally {
@@ -103,12 +104,12 @@ export const Upload = () => {
                     <p className="upload-description">Save and organize your favorite videos</p>
                 </div>
 
-                {/* Mensaje éxito/error — conectar con estado */}
-                {/* {submitMessage && (
-          <span className={submitMessage.isError ? 'auth-error' : 'auth-success'}>
-            {submitMessage.text}
-          </span>
-        )} */}
+                {uploadSuccess && (
+                    <div className="upload-success">
+                        <FontAwesomeIcon icon={faCircleCheck} className="upload-success__icon" />
+                        <p className="upload-success__message">Video uploaded successfully!</p>
+                    </div>
+                )}
 
                 <form className="upload-form" onSubmit={handleSubmit}>
                     <div className="upload-grid">
