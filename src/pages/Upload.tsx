@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import {useAuth} from '../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCloudArrowUp, faVideo, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router';
 import './Upload.css'
 import { Global } from '../helpers/Global';
 import { useUploadForm } from '../hooks/useUploadForm';
@@ -9,6 +10,7 @@ import { useUploadForm } from '../hooks/useUploadForm';
 
 export const Upload = () => {
     const {user} = useAuth();
+    const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const [categories, setCategories] = useState<{_id:string, name:string}[]>([]);
     const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
@@ -27,6 +29,16 @@ export const Upload = () => {
     useEffect(() => {
         getCategories();
     }, [])
+
+    /* Redirect to home after successful upload */
+    useEffect(() => {
+        if (uploadSuccess) {
+            const timer = setTimeout(() => {
+                navigate('/');
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [uploadSuccess, navigate])
 
     /**
      * getCategories
