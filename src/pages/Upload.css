@@ -101,6 +101,23 @@
   background: #ffffff;
 }
 
+.upload-input--error,
+.upload-textarea--error,
+.upload-select--error {
+  border-color: #ef4444;
+}
+
+.upload-dropzone--error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.upload-error {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #dc2626;
+}
+
 .upload-textarea {
   resize: vertical;
   min-height: 100px;

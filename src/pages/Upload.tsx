@@ -4,19 +4,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCloudArrowUp, faVideo } from '@fortawesome/free-solid-svg-icons'
 import './Upload.css'
 import { Global } from '../helpers/Global';
+import { useUploadForm } from '../hooks/useUploadForm';
+
 
 export const Upload = () => {
     const {user} = useAuth();
     const token = localStorage.getItem("token");
     const [categories, setCategories] = useState<{_id:string, name:string}[]>([]);
-    const [title, setTitle] = useState<string>('');
-    const [description, setDescription] = useState<string>('');
-    const [url, setUrl] = useState<string>('');
-    const [platform, setPlatform] = useState<string>('');
-    const [category, setCategory] = useState<string>('');
-    const [image, setImage] = useState<File | null>(null);
-    const [previewSrc, setPreviewSrc] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<string>('');
+    const {
+        values,
+        errors,
+        previewSrc,
+        isSubmitting,
+        setIsSubmitting,
+        handleTextChange,
+        handleImageChange,
+        handleBlur,
+        validateForm,
+    } = useUploadForm()
 
     useEffect(() => {
         getCategories();
@@ -36,7 +41,6 @@ export const Upload = () => {
                 }
             });
             const result = await response.json();
-            console.log(result);
             const names = result.categories.map((category: {_id: string, name: string}) => ({
                 _id: category._id,
                 name: category.name
@@ -48,27 +52,27 @@ export const Upload = () => {
     }
 
     /**
-     * validateForm
-     */
-    const validateForm = () => {
-        
-    }
-
-    /**
      * handleSubmit
      */
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        /* Check that there is as logged user */
+        if (!user) return
+        /* Check if the form is valid */
+        const isValid = validateForm()
+        if (!isValid) return
+        /* Create the form data with the values*/
         const formData = new FormData();
-        formData.append('user', user!.id);
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('url', url);
-        formData.append('category', category);
-        formData.append('platform', platform);
-        if (image) formData.append('image', image);
+        formData.append('user', user.id);
+        formData.append('title', values.title);
+        formData.append('description', values.description);
+        formData.append('url', values.url);
+        formData.append('category', values.category);
+        formData.append('platform', values.platform);
+        if (values.image) formData.append('image', values.image);
         
         try {
+            setIsSubmitting(true)
             const response = await fetch(Global.url + 'video', {
                 method: 'POST',
                 body: formData,
@@ -80,6 +84,8 @@ export const Upload = () => {
             console.log(data);
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
@@ -114,48 +120,75 @@ export const Upload = () => {
                                 <label htmlFor="upload-title">Title</label>
                                 <input
                                     id="upload-title"
-                                    className="upload-input"
+                                    name="title"
+                                    className={`upload-input${errors.title ? ' upload-input--error' : ''}`}
                                     type="text"
                                     placeholder="Video title"
-                                    onChange={(e)=> {setTitle(e.target.value);}}
+                                    value={values.title}
+                                    onChange={handleTextChange}
+                                    onBlur={() => handleBlur('title')}
                                 />
+                                {errors.title && <span className="upload-error">{errors.title}</span>}
                             </div>
 
                             <div className="upload-field">
                                 <label htmlFor="upload-description">Description</label>
                                 <textarea
                                     id="upload-description"
-                                    className="upload-textarea"
+                                    name="description"
+                                    className={`upload-textarea${errors.description ? ' upload-textarea--error' : ''}`}
                                     placeholder="What is this video about?"
                                     rows={4}
-                                    onChange={(e) => {setDescription(e.target.value);}}
+                                    value={values.description}
+                                    onChange={handleTextChange}
+                                    onBlur={() => handleBlur('description')}
                                 />
+                                {errors.description && <span className="upload-error">{errors.description}</span>}
                             </div>
 
                             <div className="upload-field">
                                 <label htmlFor="upload-url">Video URL</label>
                                 <input
                                     id="upload-url"
-                                    className="upload-input"
+                                    name="url"
+                                    className={`upload-input${errors.url ? ' upload-input--error' : ''}`}
                                     type="url"
                                     placeholder="https://youtube.com/watch?v=..."
-                                    onChange={(e) => {setUrl(e.target.value);}}
+                                    value={values.url}
+                                    onChange={handleTextChange}
+                                    onBlur={() => handleBlur('url')}
                                 />
+                                {errors.url && <span className="upload-error">{errors.url}</span>}
                             </div>
 
                             <div className="upload-field">
                                 <label htmlFor="upload-platform">Platform</label>
-                                <select id="upload-platform" className="upload-select" onChange={(e) => {setPlatform(e.target.value)}}>
+                                <select
+                                    id="upload-platform"
+                                    name="platform"
+                                    className={`upload-select${errors.platform ? ' upload-select--error' : ''}`}
+                                    value={values.platform}
+                                    onChange={handleTextChange}
+                                    onBlur={() => handleBlur('platform')}
+                                >
                                     <option value="">Select a platform</option>
                                     <option value="Youtube">YouTube</option>
                                     <option value="TikTok">TikTok</option>
                                     <option value="Instagram">Instagram</option>
                                 </select>
+                                {errors.platform && <span className="upload-error">{errors.platform}</span>}
                             </div>
 
                             <div className="upload-field">
                                 <label htmlFor="upload-category">Category</label>
-                                <select id="upload-category" className="upload-select" onChange={(e) => {setCategory(e.target.value)}}>
+                                <select
+                                    id="upload-category"
+                                    name="category"
+                                    className={`upload-select${errors.category ? ' upload-select--error' : ''}`}
+                                    value={values.category}
+                                    onChange={handleTextChange}
+                                    onBlur={() => handleBlur('category')}
+                                >
                                     <option value="">Select a category</option>
                                     {/* Conectar con fetch de /api/category */}
                                     {
@@ -164,6 +197,7 @@ export const Upload = () => {
                                         ))
                                     }
                                 </select>
+                                {errors.category && <span className="upload-error">{errors.category}</span>}
                             </div>
 
                         </div>
@@ -172,7 +206,10 @@ export const Upload = () => {
                         <div className="upload-col">
                             <div className="upload-field">
                                 <label>Thumbnail</label>
-                                <label htmlFor="upload-image" className="upload-dropzone">
+                                <label
+                                    htmlFor="upload-image"
+                                    className={`upload-dropzone${errors.image ? ' upload-dropzone--error' : ''}`}
+                                >
                                     {previewSrc ? (
                                         <img src={previewSrc} alt="Thumbnail preview" className="upload-preview" />
                                     ) : (
@@ -188,23 +225,17 @@ export const Upload = () => {
                                     type="file"
                                     accept="image/*"
                                     className="upload-file-input"
-                                    onChange={(e) => {
-                                        const file = e.target.files?.[0];
-                                        if (!file) return;
-                                        setImage(file);
-                                        setPreviewSrc((prev) => {
-                                            if (prev) URL.revokeObjectURL(prev)
-                                            return URL.createObjectURL(file)
-                                        });
-                                    }}
+                                    onChange={handleImageChange}
+                                    onBlur={() => handleBlur('image')}
                                 />
+                                {errors.image && <span className="upload-error">{errors.image}</span>}
                             </div>
                         </div>
 
                     </div>
 
-                    <button type="submit" className="upload-submit">
-                        Save video
+                    <button type="submit" className="upload-submit" disabled={isSubmitting}>
+                        {isSubmitting ? 'Saving video...' : 'Save video'}
                     </button>
                 </form>
 
