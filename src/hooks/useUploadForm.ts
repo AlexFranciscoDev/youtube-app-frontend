@@ -9,7 +9,8 @@ import {
     validateUploadCategory,
     validateUploadImage
 } from '../utils/validators'
-import { fetchYouTubeThumbnail, fetchTikTokThumbnail } from '../helpers/thumbnailFetcher'
+import { fetchYouTubeThumbnail, fetchTikTokThumbnail, fetchInstagramThumbnail } from '../helpers/thumbnailFetcher'
+import { Global } from '../helpers/Global'
 
 // Type interfaces
 type UploadValues = {
@@ -77,6 +78,7 @@ export const useUploadForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false) /* Check that the video is submitting, like loading */
     const [isThumbnailLoading, setIsThumbnailLoading] = useState(false)
     const [isImageManual, setIsImageManual] = useState(false)
+    const [isInstagramUrl, setIsInstagramUrl] = useState(false)
 
     // Validate each field of the form
     // It returns the message in case there's an error
@@ -160,10 +162,16 @@ export const useUploadForm = () => {
         if (isImageManual) return
         if (validateUploadUrl(values.url) !== '') return
 
+        const url = values.url;
+        if (/instagram\.com/.test(url)) {
+            setIsInstagramUrl(true)
+            return
+        }
+        setIsInstagramUrl(false)
+
         setIsThumbnailLoading(true)
         try {
             let file: File | null = null;
-            const url = values.url;
             if (/youtube\.com|youtu\.be/.test(url)) {
                 file = await fetchYouTubeThumbnail(url)
             } else if (/tiktok\.com/.test(url)) {
@@ -225,6 +233,7 @@ export const useUploadForm = () => {
     previewSrc,
     isSubmitting,
     isThumbnailLoading,
+    isInstagramUrl,
     setIsSubmitting,
     handleTextChange,
     handleImageChange,

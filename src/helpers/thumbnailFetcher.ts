@@ -26,3 +26,13 @@ export async function fetchTikTokThumbnail(url: string): Promise<File | null> {
         return new File([blob], 'thumbnail.jpg', { type: blob.type });
     } catch { return null; }
 }
+
+export async function fetchInstagramThumbnail(url: string, apiBase: string): Promise<File | null> {
+    try {
+        const res = await fetch(`${apiBase}thumbnail?url=${encodeURIComponent(url)}`);
+        if (!res.ok) return null;
+        const blob = await res.blob();
+        if (!blob.type.startsWith('image/')) return null;
+        return new File([blob], 'thumbnail.jpg', { type: blob.type });
+    } catch { return null; }
+}

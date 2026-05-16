@@ -20,6 +20,7 @@ export const Upload = () => {
         previewSrc,
         isSubmitting,
         isThumbnailLoading,
+        isInstagramUrl,
         setIsSubmitting,
         handleTextChange,
         handleImageChange,
@@ -228,6 +229,12 @@ export const Upload = () => {
                                     {isThumbnailLoading ? (
                                         <div className="upload-dropzone__placeholder">
                                             <span className="upload-dropzone__text">Fetching thumbnail…</span>
+                                        </div>
+                                    ) : isInstagramUrl && !previewSrc ? (
+                                        <div className="upload-dropzone__placeholder">
+                                            <FontAwesomeIcon icon={faCloudArrowUp} className="upload-dropzone__icon" />
+                                            <span className="upload-dropzone__text">Upload manually</span>
+                                            <span className="upload-dropzone__hint">Instagram doesn't allow auto-thumbnails</span>
                                         </div>
                                     ) : previewSrc ? (
                                         <img src={previewSrc} alt="Thumbnail preview" className="upload-preview" />
