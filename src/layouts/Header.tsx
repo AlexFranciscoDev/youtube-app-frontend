@@ -23,7 +23,7 @@ export const Header = () => {
                     ) :
                         (
                             <div className='flex gap-5 justify-center items-center'>
-                                {/* <span>Hola,{user?.name}</span> */}
+                                <Link to="/upload">Add video</Link>
                                 <Link to="/profile">Perfil</Link>
                                 <span>@{user?.username}</span>
                                 <img src={GlobalUploads.url + "others/" + user?.image} alt="profile_picture" className="w-13 h-13 object-cover rounded-full"/>
