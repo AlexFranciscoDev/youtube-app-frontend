@@ -46,7 +46,6 @@
   border-radius: 999px;
   backdrop-filter: blur(6px);
   letter-spacing: 0.03em;
-  text-transform: lowercase;
 }
 
 /* Tags sobre el thumbnail */
