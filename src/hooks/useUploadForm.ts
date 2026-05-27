@@ -12,6 +12,18 @@ import {
 import { fetchYouTubeThumbnail, fetchTikTokThumbnail, fetchInstagramThumbnail } from '../helpers/thumbnailFetcher'
 import { Global } from '../helpers/Global'
 
+//
+const PLATFORM_PATTERNS: { pattern: RegExp; value: string }[] = [
+    { pattern: /youtube\.com|youtu\.be/, value: 'Youtube' },
+    { pattern: /tiktok\.com/,            value: 'TikTok'  },
+    { pattern: /instagram\.com/,         value: 'Instagram' },
+]
+
+const detectPlatform = (url: string): string | null => {
+    const match = PLATFORM_PATTERNS.find(({ pattern }) => pattern.test(url))
+    return match ? match.value : null
+}
+
 // Type interfaces
 type UploadValues = {
     title: string,
@@ -79,6 +91,7 @@ export const useUploadForm = () => {
     const [isThumbnailLoading, setIsThumbnailLoading] = useState(false)
     const [isImageManual, setIsImageManual] = useState(false)
     const [isInstagramUrl, setIsInstagramUrl] = useState(false)
+    const [isUnsupportedPlatform, setIsUnsupportedPlatform] = useState(false)
 
     // Validate each field of the form
     // It returns the message in case there's an error
@@ -112,7 +125,18 @@ export const useUploadForm = () => {
     ) => {
         const { name, value } = e.target;
         setValues((prev) => ({...prev, [name]: value}))
-        
+
+        if (name === 'url') {
+            const detected = detectPlatform(value)
+            if (detected) {
+                setValues((prev) => ({ ...prev, url: value, platform: detected }))
+                setErrors((prev) => ({ ...prev, platform: '' }))
+                setIsUnsupportedPlatform(false)
+            } else {
+                setIsUnsupportedPlatform(value.startsWith('http'))
+            }
+        }
+
         if (touched[name as keyof UploadTouched]) {
             setErrors((prev) => ({
                 ...prev,
@@ -234,6 +258,7 @@ export const useUploadForm = () => {
     isSubmitting,
     isThumbnailLoading,
     isInstagramUrl,
+    isUnsupportedPlatform,
     setIsSubmitting,
     handleTextChange,
     handleImageChange,

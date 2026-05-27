@@ -21,6 +21,7 @@ export const Upload = () => {
         isSubmitting,
         isThumbnailLoading,
         isInstagramUrl,
+        isUnsupportedPlatform,
         setIsSubmitting,
         handleTextChange,
         handleImageChange,
@@ -175,6 +176,11 @@ export const Upload = () => {
                                     onBlur={handleUrlBlur}
                                 />
                                 {errors.url && <span className="upload-error">{errors.url}</span>}
+                                {isUnsupportedPlatform && !errors.url && (
+                                    <span className="upload-error">
+                                        Sorry, we only support YouTube, TikTok and Instagram.
+                                    </span>
+                                )}
                             </div>
 
                             <div className="upload-field">
