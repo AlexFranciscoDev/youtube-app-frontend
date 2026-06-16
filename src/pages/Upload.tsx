@@ -19,10 +19,14 @@ export const Upload = () => {
         errors,
         previewSrc,
         isSubmitting,
+        isThumbnailLoading,
+        isInstagramUrl,
+        isUnsupportedPlatform,
         setIsSubmitting,
         handleTextChange,
         handleImageChange,
         handleBlur,
+        handleUrlBlur,
         validateForm,
     } = useUploadForm()
 
@@ -169,9 +173,14 @@ export const Upload = () => {
                                     placeholder="https://youtube.com/watch?v=..."
                                     value={values.url}
                                     onChange={handleTextChange}
-                                    onBlur={() => handleBlur('url')}
+                                    onBlur={handleUrlBlur}
                                 />
                                 {errors.url && <span className="upload-error">{errors.url}</span>}
+                                {isUnsupportedPlatform && !errors.url && (
+                                    <span className="upload-error">
+                                        Sorry, we only support YouTube, TikTok and Instagram.
+                                    </span>
+                                )}
                             </div>
 
                             <div className="upload-field">
@@ -223,7 +232,17 @@ export const Upload = () => {
                                     htmlFor="upload-image"
                                     className={`upload-dropzone${errors.image ? ' upload-dropzone--error' : ''}`}
                                 >
-                                    {previewSrc ? (
+                                    {isThumbnailLoading ? (
+                                        <div className="upload-dropzone__placeholder">
+                                            <span className="upload-dropzone__text">Fetching thumbnail…</span>
+                                        </div>
+                                    ) : isInstagramUrl && !previewSrc ? (
+                                        <div className="upload-dropzone__placeholder">
+                                            <FontAwesomeIcon icon={faCloudArrowUp} className="upload-dropzone__icon" />
+                                            <span className="upload-dropzone__text">Upload manually</span>
+                                            <span className="upload-dropzone__hint">Instagram doesn't allow auto-thumbnails</span>
+                                        </div>
+                                    ) : previewSrc ? (
                                         <img src={previewSrc} alt="Thumbnail preview" className="upload-preview" />
                                     ) : (
                                         <div className="upload-dropzone__placeholder">

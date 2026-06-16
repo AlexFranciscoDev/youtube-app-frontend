@@ -9,6 +9,20 @@ import {
     validateUploadCategory,
     validateUploadImage
 } from '../utils/validators'
+import { fetchYouTubeThumbnail, fetchTikTokThumbnail, fetchInstagramThumbnail } from '../helpers/thumbnailFetcher'
+import { Global } from '../helpers/Global'
+
+//
+const PLATFORM_PATTERNS: { pattern: RegExp; value: string }[] = [
+    { pattern: /youtube\.com|youtu\.be/, value: 'Youtube' },
+    { pattern: /tiktok\.com/,            value: 'TikTok'  },
+    { pattern: /instagram\.com/,         value: 'Instagram' },
+]
+
+const detectPlatform = (url: string): string | null => {
+    const match = PLATFORM_PATTERNS.find(({ pattern }) => pattern.test(url))
+    return match ? match.value : null
+}
 
 // Type interfaces
 type UploadValues = {
@@ -74,6 +88,10 @@ export const useUploadForm = () => {
     const [touched, setTouched] = useState<UploadTouched>(initialTouched);
     const [previewSrc, setPreviewSrc] = useState<string | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false) /* Check that the video is submitting, like loading */
+    const [isThumbnailLoading, setIsThumbnailLoading] = useState(false)
+    const [isImageManual, setIsImageManual] = useState(false)
+    const [isInstagramUrl, setIsInstagramUrl] = useState(false)
+    const [isUnsupportedPlatform, setIsUnsupportedPlatform] = useState(false)
 
     // Validate each field of the form
     // It returns the message in case there's an error
@@ -107,7 +125,18 @@ export const useUploadForm = () => {
     ) => {
         const { name, value } = e.target;
         setValues((prev) => ({...prev, [name]: value}))
-        
+
+        if (name === 'url') {
+            const detected = detectPlatform(value)
+            if (detected) {
+                setValues((prev) => ({ ...prev, url: value, platform: detected }))
+                setErrors((prev) => ({ ...prev, platform: '' }))
+                setIsUnsupportedPlatform(false)
+            } else {
+                setIsUnsupportedPlatform(value.startsWith('http'))
+            }
+        }
+
         if (touched[name as keyof UploadTouched]) {
             setErrors((prev) => ({
                 ...prev,
@@ -123,7 +152,7 @@ export const useUploadForm = () => {
      */
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null
-        // Change image value 
+        // Change image value
         setValues((prev) => ({...prev, image: file}));
         // Set preview image
         setPreviewSrc((prev) => {
@@ -135,6 +164,46 @@ export const useUploadForm = () => {
                 ...prev,
                 image: validateUploadImage(file)
             }))
+        }
+        setIsImageManual(true)
+    }
+
+    const applyAutoThumbnail = (file: File) => {
+        setValues((prev) => ({ ...prev, image: file }))
+        setPreviewSrc((prev) => {
+            if (prev) URL.revokeObjectURL(prev)
+            return URL.createObjectURL(file)
+        })
+        setErrors((prev) => ({ ...prev, image: '' }))
+    }
+
+    /**
+     * handleUrlBlur
+     * Validates URL field and auto-fetches thumbnail from YouTube/TikTok
+     */
+    const handleUrlBlur = async () => {
+        handleBlur('url')
+        if (isImageManual) return
+        if (validateUploadUrl(values.url) !== '') return
+
+        const url = values.url;
+        if (/instagram\.com/.test(url)) {
+            setIsInstagramUrl(true)
+            return
+        }
+        setIsInstagramUrl(false)
+
+        setIsThumbnailLoading(true)
+        try {
+            let file: File | null = null;
+            if (/youtube\.com|youtu\.be/.test(url)) {
+                file = await fetchYouTubeThumbnail(url)
+            } else if (/tiktok\.com/.test(url)) {
+                file = await fetchTikTokThumbnail(url)
+            }
+            if (file) applyAutoThumbnail(file)
+        } finally {
+            setIsThumbnailLoading(false)
         }
     }
 
@@ -187,10 +256,14 @@ export const useUploadForm = () => {
     touched,
     previewSrc,
     isSubmitting,
+    isThumbnailLoading,
+    isInstagramUrl,
+    isUnsupportedPlatform,
     setIsSubmitting,
     handleTextChange,
     handleImageChange,
     handleBlur,
+    handleUrlBlur,
     validateForm,
   }
 }
