@@ -124,11 +124,14 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-text);
-  margin-bottom: 0.875rem;
+  margin-bottom: 0.175rem;
+  text-align: center;
 }
 
 .profile-info-row {
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   gap: 0.15rem;
   padding: 0.65rem 0;
@@ -231,40 +234,6 @@
 
   .profile-sidebar {
     position: static;
-  }
-
-  .profile-hero {
-    flex-direction: row;
-    text-align: left;
-    gap: 1rem;
-    padding: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .profile-hero > :not(.profile-avatar-wrap) {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .profile-avatar-wrap {
-    margin-bottom: 0;
-    flex-shrink: 0;
-  }
-
-  .profile-hero__name,
-  .profile-hero__email,
-  .profile-hero__since {
-    text-align: left;
-  }
-
-  .profile-stat {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 1rem 1.25rem;
-  }
-
-  .profile-stat__icon {
-    margin-bottom: 0;
   }
 }
 

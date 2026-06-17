@@ -4,6 +4,7 @@ import { faUser, faEnvelope, faCalendar, faVideo } from '@fortawesome/free-solid
 import VideoCard from '../components/VideoCard';
 import './Profile.css';
 import { GlobalUploads } from '../helpers/Global';
+import { useParams } from "react-router-dom";
 
 type User = {
     id: string,
@@ -27,13 +28,15 @@ type Video = {
 // Can display, logged in profile or other profile
 export const Profile = () => {
     const token = localStorage.getItem("token");
+    const params = useParams();
     const [user, setUser] = useState<Partial<User>>({});
     const [videos, setVideos] = useState<Video[]>([]);
 
     useEffect(() => {
         const getUserData = async () => {
             // TODO: RECOGER ID DE PARÁMETROS
-            const url = "http://localhost:3000/api/user/profile/69c72052149f5d3efb2710ff";
+            // 69c72052149f5d3efb2710ff
+            const url = `http://localhost:3000/api/user/profile/${params.id}`;
             try {
                 const response = await fetch(url, {
                     method: "GET",
@@ -56,6 +59,10 @@ export const Profile = () => {
         getUserData();
         // TODO: fetch user videos and call setVideos(data.videos)
     }, [token])
+
+    // const usersVideo = () => {
+
+    // }
 
     const formatDate = (dateStr?: string) => {
         if (!dateStr) return '—';
@@ -110,14 +117,6 @@ export const Profile = () => {
                                 Email
                             </span>
                             <span className="profile-info-row__value">{user.email ?? '—'}</span>
-                        </div>
-
-                        <div className="profile-info-row">
-                            <span className="profile-info-row__label">
-                                <FontAwesomeIcon icon={faCalendar} />
-                                Member since
-                            </span>
-                            <span className="profile-info-row__value">{formatDate(user.createdAt)}</span>
                         </div>
                     </div>
 
