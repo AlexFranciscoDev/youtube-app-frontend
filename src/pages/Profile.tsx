@@ -76,7 +76,7 @@ export const Profile = () => {
         });
         const data = await response.json();
         console.log(data);
-        setVideos(data.videos);
+        if (response.ok) setVideos(data.videos ?? []);
       } catch (error) {
         if (error instanceof Error) console.log(error.message);
       }
