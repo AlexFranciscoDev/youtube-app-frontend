@@ -39,8 +39,6 @@ export const Profile = () => {
 
   useEffect(() => {
     const getUserData = async () => {
-      // TODO: RECOGER ID DE PARÁMETROS
-      // 69c72052149f5d3efb2710ff
       const url = `http://localhost:3000/api/user/profile/${params.id}`;
       try {
         const response = await fetch(url, {
