@@ -28,3 +28,64 @@
 .header nav img {
   border: 2px solid var(--color-border);
 }
+
+.header-hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #374151;
+  padding: 0.25rem;
+}
+
+.header-mobile-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 0.25rem 0.25rem;
+  border-top: 1px solid var(--color-border);
+  background: #ffffff;
+}
+
+.header-mobile-menu a,
+.header-mobile-menu button {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #374151;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.header-mobile-menu a:hover,
+.header-mobile-menu button:hover {
+  background: #f3f4f6;
+  color: var(--color-secondary);
+}
+
+.header-mobile-user {
+  padding: 0.25rem 0;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header-mobile-user a {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.header-mobile-user span {
+  font-weight: 600;
+  color: #111827;
+  font-size: 1rem;
+}
+
+.header-mobile-user img {
+  border: 2px solid var(--color-border);
+}

@@ -73,8 +73,14 @@ export const Profile = () => {
           },
         });
         const data = await response.json();
-        console.log(data);
-        if (response.ok) setVideos(data.videos ?? []);
+        
+        const sortedVideos = [...data.videos].sort((a, b) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+
+        if (response.ok) setVideos(sortedVideos ?? []);
       } catch (error) {
         if (error instanceof Error) console.log(error.message);
       }

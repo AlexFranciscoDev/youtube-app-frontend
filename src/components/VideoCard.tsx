@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faTag, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
-import { GlobalUploads } from '../helpers/Global'
+import { GlobalUploads } from '../helpers/Global';
+import { Link } from "react-router-dom";
 import './VideoCard.css'
 
 interface VideoCardProps {
@@ -45,10 +46,12 @@ const VideoCard = (video: VideoCardProps) => {
             <div className="vcard__body">
                 <h3 className="vcard__title">{video.title}</h3>
 
+                <Link to={`/profile/${video.user._id}`}>
                 <p className="vcard__author">
                     <FontAwesomeIcon icon={faUser} className="vcard__icon" />
                     {`@${video.user.username}`}
                 </p>
+                </Link>
 
 
                 <div className="vcard__footer">

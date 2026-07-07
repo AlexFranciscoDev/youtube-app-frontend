@@ -12,17 +12,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
     const [user, setUser] = useState<User | null>(() => {
         const stored = localStorage.getItem("user");
-        return stored ? JSON.parse(stored) : null;
+        if (!stored) return null;
+        const parsed = JSON.parse(stored);
+        if (parsed._id && !parsed.id) parsed.id = parsed._id;
+        return parsed;
     });
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => !!localStorage.getItem("token"));
 
-    const login = (rawUser: User & { password?: string }, token: string) => {
-        const { password: _, ...safeUser } = rawUser;
+    const login = (rawUser: User & { _id?: string; password?: string }, token: string) => {
+        const { password: _, _id, ...rest } = rawUser;
+        const safeUser: User = { ...rest, id: _id ?? rest.id };
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(safeUser));
-        console.log(rawUser);
         setIsLoggedIn(true);
-        setUser(safeUser as User);
+        setUser(safeUser);
         setToken(token);
     }
 
