@@ -39,8 +39,6 @@ export const Profile = () => {
 
   useEffect(() => {
     const getUserData = async () => {
-      // TODO: RECOGER ID DE PARÁMETROS
-      // 69c72052149f5d3efb2710ff
       const url = `http://localhost:3000/api/user/profile/${params.id}`;
       try {
         const response = await fetch(url, {
@@ -75,8 +73,14 @@ export const Profile = () => {
           },
         });
         const data = await response.json();
-        console.log(data);
-        setVideos(data.videos);
+        
+        const sortedVideos = [...data.videos].sort((a, b) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+
+        if (response.ok) setVideos(sortedVideos ?? []);
       } catch (error) {
         if (error instanceof Error) console.log(error.message);
       }

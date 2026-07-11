@@ -1,29 +1,34 @@
-import { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass, faFilter, faTableCells, faBars } from '@fortawesome/free-solid-svg-icons'
-import VideoCard from '../components/VideoCard';
-import './Home.css'
+import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMagnifyingGlass,
+  faFilter,
+  faTableCells,
+  faBars,
+} from "@fortawesome/free-solid-svg-icons";
+import VideoCard from "../components/VideoCard";
+import "./Home.css";
 
 type Video = {
-  id: string,
-  user: { username: string; email: string },
-  title: string,
-  url: string,
-  category: { name: string, description: string },
-  platform: string,
-  image: string,
-  createdAt: string
-}
+  id: string;
+  user: { username: string; email: string };
+  title: string;
+  url: string;
+  category: { name: string; description: string };
+  platform: string;
+  image: string;
+  createdAt: string;
+};
 
 export const Home = () => {
   const token = localStorage.getItem("token");
   const [videos, setVideos] = useState<Video[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     getVideos();
-  }, [])
+  }, []);
 
   const getVideos = async () => {
     const url = "http://localhost:3000/api/video/";
@@ -36,27 +41,37 @@ export const Home = () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: token,
-        }
+        },
       });
       if (!response.ok) throw new Error("Error getting the videos");
       const data = await response.json();
-      setVideos(data.videos);
+
+      const sortedVideos = [...data.videos].sort((a, b) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+
+      setVideos(sortedVideos);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Unexpected error';
+      const message =
+        error instanceof Error ? error.message : "Unexpected error";
       setError(message);
       console.error(error);
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="home">
-
       {/* Top bar */}
       <div className="home__topbar">
         <div className="home__search-wrapper">
-          <FontAwesomeIcon icon={faMagnifyingGlass} className="home__search-icon" />
+          <FontAwesomeIcon
+            icon={faMagnifyingGlass}
+            className="home__search-icon"
+          />
           <input
             type="text"
             className="home__search"
@@ -74,7 +89,10 @@ export const Home = () => {
             All categories
           </button>
           <div className="home__view-toggle">
-            <button className="home__view-btn home__view-btn--active" aria-label="Grid view">
+            <button
+              className="home__view-btn home__view-btn--active"
+              aria-label="Grid view"
+            >
               <FontAwesomeIcon icon={faTableCells} />
             </button>
             <button className="home__view-btn" aria-label="List view">
@@ -93,28 +111,26 @@ export const Home = () => {
         <span className="home__count">{videos.length} videos found</span>
       </div>
 
-
-      {isLoading ?
-        (<p>Loading...</p>)
-        : error ?
-          (<p>{error}</p>)
-          :
-          (<div className="home__grid">
-            {videos.map((video) =>
-              <VideoCard
-                key={video._id}
-                user={video.user}
-                title={video.title}
-                url={video.url}
-                category={video.category}
-                platform={video.platform}
-                image={video.image}
-                createdAt={video.createdAt}
-              />)
-            }
-          </div>)
-      }
-
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <div className="home__grid">
+          {videos.map((video) => (
+            <VideoCard
+              key={video._id}
+              user={video.user}
+              title={video.title}
+              url={video.url}
+              category={video.category}
+              platform={video.platform}
+              image={video.image}
+              createdAt={video.createdAt}
+            />
+          ))}
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
