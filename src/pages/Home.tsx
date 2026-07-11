@@ -7,11 +7,12 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import VideoCard from "../components/VideoCard";
+import { Global } from "../helpers/Global";
 import "./Home.css";
 
 type Video = {
-  id: string;
-  user: { username: string; email: string };
+  _id: string;
+  user: { _id: string; username: string; email: string };
   title: string;
   url: string;
   category: { name: string; description: string };
@@ -31,7 +32,7 @@ export const Home = () => {
   }, []);
 
   const getVideos = async () => {
-    const url = "http://localhost:3000/api/video/";
+    const url = `${Global.url}video/`;
     try {
       if (!token) {
         throw new Error("No token available");

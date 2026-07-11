@@ -1,11 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faTag, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
-import { GlobalUploads } from '../helpers/Global';
 import { Link } from "react-router-dom";
 import './VideoCard.css'
 
 interface VideoCardProps {
-    user: {username: string; email: string;},
+    user: {_id: string; username: string; email: string;},
     title: string,
     url: string,
     category: {name: string; description: string;},
@@ -29,7 +28,7 @@ const VideoCard = (video: VideoCardProps) => {
             {/* Thumbnail */}
             <div className="vcard__thumbnail-wrapper">
                 <img
-                    src={`${GlobalUploads.url}videos/${video.image}`}
+                    src={video.image}
                     alt="video thumbnail"
                     className="vcard__thumbnail"
                 />

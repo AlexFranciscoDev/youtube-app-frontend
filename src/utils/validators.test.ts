@@ -1,5 +1,4 @@
 import { validateEmail, validatePassword, validateUsername, validateConfirmPassword, validateProfileImage} from "./validators";
-import { Register } from "../pages/Register";
 // import { render, fireEvent } from "@testing-library/react";
 
 describe("validators", () => {

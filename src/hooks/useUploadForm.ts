@@ -9,8 +9,7 @@ import {
     validateUploadCategory,
     validateUploadImage
 } from '../utils/validators'
-import { fetchYouTubeThumbnail, fetchTikTokThumbnail, fetchInstagramThumbnail } from '../helpers/thumbnailFetcher'
-import { Global } from '../helpers/Global'
+import { fetchYouTubeThumbnail, fetchTikTokThumbnail } from '../helpers/thumbnailFetcher'
 
 //
 const PLATFORM_PATTERNS: { pattern: RegExp; value: string }[] = [
