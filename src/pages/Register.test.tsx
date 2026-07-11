@@ -191,7 +191,7 @@ describe("Register component", () => {
 
   describe("Empty submit", () => {
     it("Show all errors and don't fetch", () => {
-      const fetchSpy = vi.spyOn(global, "fetch").mockImplementation(vi.fn());
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(vi.fn());
       const button = screen.getByRole("button", { name: /Create account/i });
       fireEvent.click(button);
       expect(screen.getByText("Username is required")).toBeInTheDocument();
@@ -230,7 +230,7 @@ describe("Register component", () => {
 
     it("Show error message when fetching", async () => {
       // Mock fetching
-      const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
         json: async () => ({
           status: "Error",
           message: "Email already registered"

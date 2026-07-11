@@ -86,7 +86,7 @@ describe("Login component", () => {
   });
 
   it("shows the backend error message when the User is not found", async () => {
-    vi.spyOn(global, "fetch").mockResolvedValueOnce({
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
       json: async () => ({
         status: "Error",
         message: "User not found",
@@ -102,7 +102,7 @@ describe("Login component", () => {
   });
 
   it("Show errors and doesnt't fetch if the form is not valid", async () => {
-    const fetchSpy = vi.spyOn(global, "fetch").mockImplementation(vi.fn());
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(vi.fn());
     const emailInput = screen.getByLabelText("Email");
     const passwordInput = screen.getByLabelText("Password");
     const submitBtn = screen.getByRole("button", { name: /Sign in/ });
@@ -118,7 +118,7 @@ describe("Login component", () => {
 
   it("Checks that fetch calls the right data", async () => {
     const user = userEvent.setup();
-    const fetchSpy = vi.spyOn(global, "fetch").mockResolvedValueOnce({
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
       json: async () => ({
         status: "Success",
         user: {

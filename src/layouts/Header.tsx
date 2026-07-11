@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext";
-import { GlobalUploads } from "../helpers/Global";
 import "../assets/css/header.css";
 
 export const Header = () => {
@@ -32,7 +31,7 @@ export const Header = () => {
                             <Link to="/upload">Add video</Link>
                             <Link to={`/profile/${user?.id}`}>@{user?.username}</Link>
                             <Link to={`/profile/${user?.id}`}>
-                                <img src={GlobalUploads.url + "others/" + user?.image} alt="profile_picture" className="w-13 h-13 object-cover rounded-full"/>
+                                <img src={user?.image} alt="profile_picture" className="w-13 h-13 object-cover rounded-full"/>
                             </Link>
                             <button onClick={logout}>Logout</button>
                         </div>
@@ -61,7 +60,7 @@ export const Header = () => {
                         <>
                             <div className="header-mobile-user">
                                 <Link to={`/profile/${user?.id}`} onClick={closeMenu}>
-                                <img src={GlobalUploads.url + "others/" + user?.image} alt="profile_picture" className="w-12 h-12 object-cover rounded-full"/>
+                                <img src={user?.image} alt="profile_picture" className="w-12 h-12 object-cover rounded-full"/>
                                 <span>@{user?.username}</span>
                                 </Link>
                             </div>

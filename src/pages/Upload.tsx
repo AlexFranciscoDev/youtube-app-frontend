@@ -97,7 +97,7 @@ export const Upload = () => {
                     Authorization: token ?? ''
                 }
             });
-            const data = await response.json();
+            await response.json();
             setUploadSuccess(true);
         } catch (error) {
             console.log(error);
