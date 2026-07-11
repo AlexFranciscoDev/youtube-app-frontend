@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import VideoCard from "../components/VideoCard";
 import "./Profile.css";
-import { GlobalUploads } from "../helpers/Global";
+import { Global } from "../helpers/Global";
 import { useParams } from "react-router-dom";
 
 type User = {
@@ -21,7 +21,7 @@ type User = {
 
 type Video = {
   id: string;
-  user: { username: string; email: string };
+  user: { _id: string; username: string; email: string };
   title: string;
   url: string;
   category: { name: string; description: string };
@@ -39,7 +39,7 @@ export const Profile = () => {
 
   useEffect(() => {
     const getUserData = async () => {
-      const url = `http://localhost:3000/api/user/profile/${params.id}`;
+      const url = `${Global.url}user/profile/${params.id}`;
       try {
         const response = await fetch(url, {
           method: "GET",
@@ -63,7 +63,7 @@ export const Profile = () => {
     getUserData();
 
     const getUsersVideo = async () => {
-      const url = `http://localhost:3000/api/video/user/${params.id}`;
+      const url = `${Global.url}video/user/${params.id}`;
       try {
         const response = await fetch(url, {
           method: "GET",
@@ -106,7 +106,7 @@ export const Profile = () => {
             <div className="profile-avatar-wrap">
               {user.image ? (
                 <img
-                  src={GlobalUploads.url + "others/" + user.image}
+                  src={user.image}
                   alt="profile_picture"
                 />
               ) : (
