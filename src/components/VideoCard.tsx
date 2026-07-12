@@ -1,10 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faTag, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { GlobalUploads } from '../helpers/Global';
 import { Link } from "react-router-dom";
 import './VideoCard.css'
 
 interface VideoCardProps {
-    user: {_id: string; username: string; email: string;},
+    user: {username: string; email: string;},
     title: string,
     url: string,
     category: {name: string; description: string;},
@@ -21,14 +22,19 @@ const formatDateEnglish = (dateProp: string) => {
     return `${day} ${month} ${year}`
 }
 
+const isAbsoluteUrl = (url: string) => /^https?:\/\//i.test(url);
+
 const VideoCard = (video: VideoCardProps) => {
     const videoDate = formatDateEnglish(video.createdAt);
+    const thumbnailSrc = isAbsoluteUrl(video.image)
+        ? video.image
+        : `${GlobalUploads.url}videos/${video.image}`;
     return (
         <article className="vcard">
             {/* Thumbnail */}
             <div className="vcard__thumbnail-wrapper">
                 <img
-                    src={video.image}
+                    src={thumbnailSrc}
                     alt="video thumbnail"
                     className="vcard__thumbnail"
                 />
@@ -51,7 +57,6 @@ const VideoCard = (video: VideoCardProps) => {
                     {`@${video.user.username}`}
                 </p>
                 </Link>
-
 
                 <div className="vcard__footer">
                     <span className="vcard__date">{videoDate}</span>

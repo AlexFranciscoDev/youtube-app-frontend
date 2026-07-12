@@ -1,15 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
-  faEnvelope,
   faCalendar,
   faVideo,
+  faCamera,
+  faLock,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import VideoCard from "../components/VideoCard";
+import { PasswordInput } from "../components/PasswordInput";
 import "./Profile.css";
+import "./AuthForm.css";
 import { Global } from "../helpers/Global";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { validatePassword, validateConfirmPassword } from "../utils/validators";
 
 type User = {
   id: string;
@@ -30,12 +36,35 @@ type Video = {
   createdAt: string;
 };
 
+type FeedbackMessage = { text: string; isError: boolean };
+
 // Can display, logged in profile or other profile
 export const Profile = () => {
   const token = localStorage.getItem("token");
   const params = useParams();
+  const { user: authUser, login } = useAuth();
   const [user, setUser] = useState<Partial<User>>({});
   const [videos, setVideos] = useState<Video[]>([]);
+
+  const isOwnProfile = !!authUser && authUser.id === params.id;
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUpdatingImage, setIsUpdatingImage] = useState(false);
+  const [imageMessage, setImageMessage] = useState<FeedbackMessage | null>(null);
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState<FeedbackMessage | null>(null);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordErrors, setPasswordErrors] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
 
   useEffect(() => {
     const getUserData = async () => {
@@ -73,7 +102,7 @@ export const Profile = () => {
           },
         });
         const data = await response.json();
-        
+
         const sortedVideos = [...data.videos].sort((a, b) => {
         return (
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -95,6 +124,91 @@ export const Profile = () => {
       month: "long",
       year: "numeric",
     });
+  };
+
+  const handleChangePictureClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUpdatingImage(true);
+    setImageMessage(null);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await fetch(`${Global.url}user/profile`, {
+        method: "PUT",
+        headers: { Authorization: token ?? "" },
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setImageMessage({ text: data.message ?? "Could not update the profile picture", isError: true });
+        return;
+      }
+
+      setUser((prev) => ({ ...prev, image: data.user.image }));
+      if (authUser) login({ ...authUser, image: data.user.image }, token ?? "");
+      setImageMessage({ text: "Profile picture updated", isError: false });
+    } catch (error) {
+      setImageMessage({ text: "Something went wrong, please try again", isError: true });
+    } finally {
+      setIsUpdatingImage(false);
+      event.target.value = "";
+    }
+  };
+
+  const closePasswordModal = () => {
+    setShowPasswordModal(false);
+    setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    setPasswordErrors({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    setPasswordMessage(null);
+  };
+
+  const handlePasswordSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const currentPasswordError = passwordForm.currentPassword ? "" : "Current password is required";
+    const newPasswordError = validatePassword(passwordForm.newPassword);
+    const confirmPasswordError = validateConfirmPassword(passwordForm.confirmPassword, passwordForm.newPassword);
+
+    setPasswordErrors({
+      currentPassword: currentPasswordError,
+      newPassword: newPasswordError,
+      confirmPassword: confirmPasswordError,
+    });
+
+    if (currentPasswordError || newPasswordError || confirmPasswordError) return;
+
+    setIsSubmittingPassword(true);
+    setPasswordMessage(null);
+    try {
+      const response = await fetch(`${Global.url}user/profile/password`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: token ?? "" },
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          password: passwordForm.newPassword,
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        setPasswordMessage({ text: data.message ?? "Could not update the password", isError: true });
+        return;
+      }
+
+      setPasswordMessage({ text: "Password updated correctly", isError: false });
+      setTimeout(closePasswordModal, 1500);
+    } catch (error) {
+      setPasswordMessage({ text: "Something went wrong, please try again", isError: true });
+    } finally {
+      setIsSubmittingPassword(false);
+    }
   };
 
   return (
@@ -129,29 +243,42 @@ export const Profile = () => {
             <span className="profile-stat__label">Videos</span>
           </div>
 
-          <div className="profile-info">
-            <p className="profile-info__title">Account information</p>
+          {isOwnProfile && (
+            <div className="profile-actions">
+              <p className="profile-info__title">Edit profile</p>
 
-            <div className="profile-info-row">
-              <span className="profile-info-row__label">
-                <FontAwesomeIcon icon={faUser} />
-                Username
-              </span>
-              <span className="profile-info-row__value">
-                @{user.username ?? "—"}
-              </span>
-            </div>
+              <button
+                type="button"
+                className="profile-action-btn"
+                onClick={handleChangePictureClick}
+                disabled={isUpdatingImage}
+              >
+                <FontAwesomeIcon icon={faCamera} />
+                {isUpdatingImage ? "Uploading..." : "Change profile picture"}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleImageChange}
+              />
+              {imageMessage && (
+                <span className={imageMessage.isError ? "auth-error" : "auth-success"}>
+                  {imageMessage.text}
+                </span>
+              )}
 
-            <div className="profile-info-row">
-              <span className="profile-info-row__label">
-                <FontAwesomeIcon icon={faEnvelope} />
-                Email
-              </span>
-              <span className="profile-info-row__value">
-                {user.email ?? "—"}
-              </span>
+              <button
+                type="button"
+                className="profile-action-btn profile-action-btn--secondary"
+                onClick={() => setShowPasswordModal(true)}
+              >
+                <FontAwesomeIcon icon={faLock} />
+                Change password
+              </button>
             </div>
-          </div>
+          )}
         </aside>
 
         {/* ── Main: video grid ── */}
@@ -189,6 +316,95 @@ export const Profile = () => {
           </div>
         </main>
       </div>
+
+      {showPasswordModal && (
+        <div className="modal-overlay" onClick={() => !isSubmittingPassword && closePasswordModal()}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="modal-close"
+              aria-label="Close"
+              onClick={closePasswordModal}
+            >
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
+            <h3 className="modal-title">Change password</h3>
+            {passwordMessage && (
+              <span className={passwordMessage.isError ? "auth-error" : "auth-success"}>
+                {passwordMessage.text}
+              </span>
+            )}
+            <form className="auth-form" onSubmit={handlePasswordSubmit}>
+              <div className="auth-field">
+                <label htmlFor="current-password">Current password</label>
+                <PasswordInput
+                  id="current-password"
+                  hasError={!!passwordErrors.currentPassword}
+                  ariaLabel={passwordErrors.currentPassword ? "Hide password" : "Show password"}
+                  onChange={(value) => {
+                    setPasswordForm((prev) => ({ ...prev, currentPassword: value }))
+                    setPasswordErrors((prev) => ({ ...prev, currentPassword: value ? "" : prev.currentPassword }))
+                  }}
+                  onBlur={(value) =>
+                    setPasswordErrors((prev) => ({
+                      ...prev,
+                      currentPassword: value ? "" : "Current password is required",
+                    }))
+                  }
+                />
+                {passwordErrors.currentPassword && (
+                  <span className="auth-error">{passwordErrors.currentPassword}</span>
+                )}
+              </div>
+              <div className="auth-field">
+                <label htmlFor="new-password">New password</label>
+                <PasswordInput
+                  id="new-password"
+                  hasError={!!passwordErrors.newPassword}
+                  ariaLabel={passwordErrors.newPassword ? "Hide password" : "Show password"}
+                  onChange={(value) => {
+                    setPasswordForm((prev) => ({ ...prev, newPassword: value }))
+                    setPasswordErrors((prev) => ({ ...prev, newPassword: validatePassword(value) }))
+                  }}
+                  onBlur={(value) =>
+                    setPasswordErrors((prev) => ({ ...prev, newPassword: validatePassword(value) }))
+                  }
+                />
+                {passwordErrors.newPassword && (
+                  <span className="auth-error">{passwordErrors.newPassword}</span>
+                )}
+              </div>
+              <div className="auth-field">
+                <label htmlFor="confirm-new-password">Confirm new password</label>
+                <PasswordInput
+                  id="confirm-new-password"
+                  hasError={!!passwordErrors.confirmPassword}
+                  ariaLabel={passwordErrors.confirmPassword ? "Hide password" : "Show password"}
+                  onChange={(value) => {
+                    setPasswordForm((prev) => ({ ...prev, confirmPassword: value }))
+                    setPasswordErrors((prev) => ({
+                      ...prev,
+                      confirmPassword: validateConfirmPassword(value, passwordForm.newPassword),
+                    }))
+                  }}
+                  onBlur={(value) =>
+                    setPasswordErrors((prev) => ({
+                      ...prev,
+                      confirmPassword: validateConfirmPassword(value, passwordForm.newPassword),
+                    }))
+                  }
+                />
+                {passwordErrors.confirmPassword && (
+                  <span className="auth-error">{passwordErrors.confirmPassword}</span>
+                )}
+              </div>
+              <button type="submit" className="auth-submit" disabled={isSubmittingPassword}>
+                {isSubmittingPassword ? "Updating..." : "Update password"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
