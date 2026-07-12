@@ -1,6 +1,7 @@
 export const validateEmail = (value: string): string => {
   if (!value) return 'Email is required';
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Invalid email format';
+  if (!value.includes('@')) return 'Email must include an @ symbol';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Enter a valid email address';
   return '';
 };
 
@@ -14,6 +15,7 @@ export const validateUsername = (value: string): string => {
   if (!value) return 'Username is required';
   if (value.length < 5) return 'Username must be at least 5 characters';
   if (/\s/.test(value)) return 'Username cannot contain spaces';
+  if (!/^[A-Za-zÀ-ÿ0-9_]+$/.test(value)) return 'You can only use letters and numbers';
   return '';
 };
 

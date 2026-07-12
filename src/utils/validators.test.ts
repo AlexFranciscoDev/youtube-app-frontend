@@ -7,9 +7,13 @@ describe("validators", () => {
             const error = validateEmail("");
             expect(error).toBe("Email is required");
         })
-        it("check if email format is correct", () => {
+        it("check if email is missing the @ symbol", () => {
             const error = validateEmail("test.com");
-            expect(error).toBe("Invalid email format");
+            expect(error).toBe("Email must include an @ symbol");
+        })
+        it("check if email format is correct", () => {
+            const error = validateEmail("test@com");
+            expect(error).toBe("Enter a valid email address");
         })
         it("Correct email should return empty string", () => {
             const error = validateEmail("test@example.com");
@@ -49,6 +53,11 @@ describe("validators", () => {
         it("Should return error if username contains spaces", () => {
             const error = validateUsername("hello world");
             expect(error).toBe("Username cannot contain spaces")
+        })
+
+        it("Should return error if username contains non-alphanumeric characters", () => {
+            const error = validateUsername("qwdqwdqwd----dqwdasdfsafdf");
+            expect(error).toBe("You can only use letters and numbers")
         })
 
         it("Correct username should return empty string", () => {
