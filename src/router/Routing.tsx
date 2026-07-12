@@ -6,6 +6,7 @@ import { NotFound } from '../pages/NotFound.tsx';
 import { MainLayout } from "../layouts/MainLayout";
 import { Upload } from '../pages/Upload.tsx';
 import { Profile } from "../pages/Profile.tsx";
+import { VideoDetail } from "../pages/VideoDetail.tsx";
 import ProtectedRoute from '../helpers/ProtectedRoute';
 
 export const Routing = () => {
@@ -16,6 +17,7 @@ export const Routing = () => {
                     <Route index element={<Home />} />
                     <Route path='/upload' element={<Upload />} />
                     <Route path="/profile/:id" element={<Profile/>}></Route>
+                    <Route path="/video-preview" element={<VideoDetail/>}></Route>
                 </Route>
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
