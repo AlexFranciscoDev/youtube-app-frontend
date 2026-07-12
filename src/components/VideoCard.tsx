@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import './VideoCard.css'
 
 interface VideoCardProps {
-    user: {username: string; email: string;},
+    user: {_id: string; username: string; email: string;},
     title: string,
     url: string,
     category: {name: string; description: string;},

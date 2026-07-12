@@ -155,7 +155,7 @@ export const Profile = () => {
       setUser((prev) => ({ ...prev, image: data.user.image }));
       if (authUser) login({ ...authUser, image: data.user.image }, token ?? "");
       setImageMessage({ text: "Profile picture updated", isError: false });
-    } catch (error) {
+    } catch {
       setImageMessage({ text: "Something went wrong, please try again", isError: true });
     } finally {
       setIsUpdatingImage(false);
@@ -204,7 +204,7 @@ export const Profile = () => {
 
       setPasswordMessage({ text: "Password updated correctly", isError: false });
       setTimeout(closePasswordModal, 1500);
-    } catch (error) {
+    } catch {
       setPasswordMessage({ text: "Something went wrong, please try again", isError: true });
     } finally {
       setIsSubmittingPassword(false);
