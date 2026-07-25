@@ -103,14 +103,20 @@ export const Profile = () => {
         });
         const data = await response.json();
 
-        const sortedVideos = [...data.videos].sort((a, b) => {
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      });
+        if (!response.ok) {
+          setVideos([]);
+          return;
+        }
 
-        if (response.ok) setVideos(sortedVideos ?? []);
+        const sortedVideos = [...data.videos].sort((a, b) => {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        });
+
+        setVideos(sortedVideos);
       } catch (error) {
+        setVideos([]);
         if (error instanceof Error) console.log(error.message);
       }
     };

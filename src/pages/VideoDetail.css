@@ -8,6 +8,14 @@
   gap: 1.5rem;
 }
 
+/* ── Top bar ── */
+.video-detail__top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 /* ── Back link ── */
 .video-detail__back {
   display: inline-flex;
@@ -21,6 +29,27 @@
 
 .video-detail__back:hover {
   color: var(--color-secondary);
+}
+
+/* ── Edit button ── */
+.video-detail__edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  background: var(--tag-color);
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-detail__edit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* ── Player ── */

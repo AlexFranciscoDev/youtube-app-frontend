@@ -7,7 +7,8 @@ import {
     validateUploadUrl,
     validateUploadPlatform,
     validateUploadCategory,
-    validateUploadImage
+    validateUploadImage,
+    validateUploadImageOptional
 } from '../utils/validators'
 import { fetchYouTubeThumbnail, fetchTikTokThumbnail } from '../helpers/thumbnailFetcher'
 
@@ -79,13 +80,21 @@ const initialTouched: UploadTouched = {
   image: false,
 }
 
-export const useUploadForm = () => {
+type UseUploadFormOptions = {
+    seedValues?: Partial<UploadValues>
+    seedPreviewSrc?: string | null
+    // When editing an existing video, a new thumbnail isn't required
+    requireImage?: boolean
+}
+
+export const useUploadForm = (options: UseUploadFormOptions = {}) => {
+    const { seedValues, seedPreviewSrc = null, requireImage = true } = options
     // Initialize values
-    const [values, setValues] = useState<UploadValues>(initialValues);
+    const [values, setValues] = useState<UploadValues>({ ...initialValues, ...seedValues });
     // Initialize errors
     const [errors, setErrors] = useState<UploadErrors>(initialErrors);
     const [touched, setTouched] = useState<UploadTouched>(initialTouched);
-    const [previewSrc, setPreviewSrc] = useState<string | null>(null)
+    const [previewSrc, setPreviewSrc] = useState<string | null>(seedPreviewSrc)
     const [isSubmitting, setIsSubmitting] = useState(false) /* Check that the video is submitting, like loading */
     const [isThumbnailLoading, setIsThumbnailLoading] = useState(false)
     const [isImageManual, setIsImageManual] = useState(false)
@@ -107,7 +116,9 @@ export const useUploadForm = () => {
       case 'category':
         return validateUploadCategory(value as string)
       case 'image':
-        return validateUploadImage(value as File | null)
+        return requireImage
+          ? validateUploadImage(value as File | null)
+          : validateUploadImageOptional(value as File | null)
       default:
         return ''
     }
@@ -229,7 +240,9 @@ export const useUploadForm = () => {
             url: validateUploadUrl(values.url),
             platform: validateUploadPlatform(values.platform),
             category: validateUploadCategory(values.category),
-            image: validateUploadImage(values.image)
+            image: requireImage
+                ? validateUploadImage(values.image)
+                : validateUploadImageOptional(values.image)
         }
         /* Set all errors to the variable */
         setErrors(newErrors)

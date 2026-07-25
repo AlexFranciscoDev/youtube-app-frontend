@@ -68,3 +68,11 @@ export const validateUploadImage = (value: File | null): string => {
   if (value.size > 5 * 1024 * 1024) return 'Image must be 5MB or smaller'
   return ''
 }
+
+// Used when editing a video: a new thumbnail is optional since one already exists
+export const validateUploadImageOptional = (value: File | null): string => {
+  if (!value) return ''
+  if (!value.type.startsWith('image/')) return 'File must be an image'
+  if (value.size > 5 * 1024 * 1024) return 'Image must be 5MB or smaller'
+  return ''
+}

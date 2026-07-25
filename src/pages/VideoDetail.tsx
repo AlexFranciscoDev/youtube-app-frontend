@@ -6,11 +6,14 @@ import {
   faArrowUpRightFromSquare,
   faChevronLeft,
   faPlay,
+  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Global } from "../helpers/Global";
 import VideoCard from "../components/VideoCard";
+import { EditVideoModal } from "../components/EditVideoModal";
+import { useAuth } from "../context/AuthContext";
 import "./VideoDetail.css";
 
 type Video = {
@@ -36,10 +39,12 @@ const formatDateEnglish = (dateProp: string) => {
 
 export const VideoDetail = () => {
   const { id } = useParams(); // Guardamos el id de la url
+  const { user: authUser } = useAuth();
   const [video, setVideo] = useState<Video | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [related, setRelated] = useState<Video[]>([]);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     getVideo();
@@ -104,12 +109,27 @@ export const VideoDetail = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error || !video) return <p>{error || "Video not found"}</p>;
 
+  const isOwner = !!authUser && authUser.id === video.user._id;
+
   return (
     <div className="video-detail-page">
-      <Link to="/" className="video-detail__back">
-        <FontAwesomeIcon icon={faChevronLeft} />
-        Back to feed
-      </Link>
+      <div className="video-detail__top-bar">
+        <Link to="/" className="video-detail__back">
+          <FontAwesomeIcon icon={faChevronLeft} />
+          Back to feed
+        </Link>
+
+        {isOwner && (
+          <button
+            type="button"
+            className="video-detail__edit-btn"
+            onClick={() => setShowEditModal(true)}
+          >
+            <FontAwesomeIcon icon={faPenToSquare} />
+            Edit video
+          </button>
+        )}
+      </div>
 
       <div className="video-detail__player">
         <img
@@ -183,6 +203,14 @@ export const VideoDetail = () => {
             ))}
           </div>
         </div>
+      )}
+
+      {showEditModal && (
+        <EditVideoModal
+          video={video}
+          onClose={() => setShowEditModal(false)}
+          onSaved={() => getVideo()}
+        />
       )}
     </div>
   );
