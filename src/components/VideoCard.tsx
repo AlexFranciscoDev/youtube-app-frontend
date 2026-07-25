@@ -34,7 +34,7 @@ const VideoCard = (video: VideoCardProps) => {
     <article className="vcard">
       {/* Thumbnail */}
       <div className="vcard__thumbnail-wrapper">
-        <Link to={`/video-preview/${video._id}`} className="vcard__link">
+        <Link to={`/video/${video._id}`} className="vcard__link">
         <img
           src={thumbnailSrc}
           alt="video thumbnail"
@@ -52,7 +52,7 @@ const VideoCard = (video: VideoCardProps) => {
 
       {/* Body */}
       <div className="vcard__body">
-        <h3 className="vcard__title"><Link to={`/video-preview/${video._id}`} className="vcard__link">{video.title}</Link></h3>
+        <h3 className="vcard__title"><Link to={`/video/${video._id}`} className="vcard__link">{video.title}</Link></h3>
 
         <Link to={`/profile/${video.user._id}`}>
           <p className="vcard__author">
@@ -63,7 +63,7 @@ const VideoCard = (video: VideoCardProps) => {
 
         <div className="vcard__footer">
           <span className="vcard__date">{videoDate}</span>
-          <Link to={`/video-preview/${video._id}`} className="vcard__link">
+          <Link to={`/video/${video._id}`} className="vcard__link">
             Ver
             <FontAwesomeIcon
               icon={faArrowUpRightFromSquare}

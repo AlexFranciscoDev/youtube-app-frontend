@@ -19,7 +19,7 @@ type Video = {
   title: string;
   description: string;
   url: string;
-  category: { name: string; description: string };
+  category: { _id: string; name: string; description: string };
   platform: string;
   image: string;
   createdAt: string;
@@ -39,12 +39,16 @@ export const VideoDetail = () => {
   const [video, setVideo] = useState<Video | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  // TODO (paso 6): sustituir por un fetch a GET /video/user/:id
-  const related: Video[] = [];
+  const [related, setRelated] = useState<Video[]>([]);
 
   useEffect(() => {
     getVideo();
   }, [id]);
+
+  useEffect(() => {
+    if (!video) return;
+    getRelatedVideos(video.category._id, video._id);
+  }, [video]);
 
   const getVideo = async () => {
     const token = localStorage.getItem("token");
@@ -70,6 +74,30 @@ export const VideoDetail = () => {
       console.error(error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getRelatedVideos = async (
+    categoryId: string,
+    currentVideoId: string,
+  ) => {
+    const token = localStorage.getItem("token");
+    const url = `${Global.url}video/category/${categoryId}`;
+    try {
+      if (!token) return;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+      if (!response.ok) return;
+      const data = await response.json();
+      const videosFound = (data.videosFound as Video[]) ?? [];
+      setRelated(videosFound.filter((v) => v._id !== currentVideoId));
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -109,8 +137,8 @@ export const VideoDetail = () => {
             to={`/profile/${video.user._id}`}
             className="video-detail__author"
           >
-            <FontAwesomeIcon icon={faUser} className="video-detail__icon" />
-            @{video.user.username}
+            <FontAwesomeIcon icon={faUser} className="video-detail__icon" />@
+            {video.user.username}
           </Link>
           <span className="video-detail__meta-divider" />
           <span className="video-detail__date">
@@ -138,9 +166,7 @@ export const VideoDetail = () => {
 
       {related.length > 0 && (
         <div className="video-detail__related">
-          <h2 className="video-detail__related-title">
-            More from @{video.user.username}
-          </h2>
+          <h2 className="video-detail__related-title">Related videos</h2>
           <div className="video-detail__related-grid">
             {related.map((item) => (
               <VideoCard
