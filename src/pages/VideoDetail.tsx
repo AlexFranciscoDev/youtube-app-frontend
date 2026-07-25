@@ -7,57 +7,23 @@ import {
   faChevronLeft,
   faPlay,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { Global } from "../helpers/Global";
 import VideoCard from "../components/VideoCard";
 import "./VideoDetail.css";
 
-// Placeholder data so the design can be reviewed before the real
-// fetch/routing logic is wired up.
-const mockVideo = {
-  title: "How to communicate like an adult (rare skill)",
-  description:
-    "A short breakdown of the communication habits that actually make conversations easier: how to disagree without escalating, how to ask for what you need directly, and why most 'conflicts' are really just two people who never said the quiet part out loud.",
-  url: "https://www.youtube.com/watch?v=uldljvvm3017wwkgf",
-  platform: "Youtube",
-  image:
-    "https://res.cloudinary.com/demo/image/upload/v1783894749/youtube-thumbnails/uldljvvm3017wwkgf.jpg",
-  category: { name: "Gym", description: "" },
-  user: { _id: "1", username: "pruebaaa", email: "prueba@prueba.com" },
-  createdAt: "2026-07-12T00:00:00.000Z",
+type Video = {
+  _id: string;
+  user: { _id: string; username: string; email: string };
+  title: string;
+  description: string;
+  url: string;
+  category: { name: string; description: string };
+  platform: string;
+  image: string;
+  createdAt: string;
 };
-
-const mockRelated = [
-  {
-    id: "2",
-    user: mockVideo.user,
-    title: "asdasd",
-    url: "https://www.youtube.com/watch?v=abc123",
-    category: { name: "Gym", description: "" },
-    platform: "Youtube",
-    image: mockVideo.image,
-    createdAt: "2026-07-13T00:00:00.000Z",
-  },
-  {
-    id: "3",
-    user: mockVideo.user,
-    title: "5 minute mobility routine for desk workers",
-    url: "https://www.youtube.com/watch?v=def456",
-    category: { name: "Gym", description: "" },
-    platform: "Youtube",
-    image: mockVideo.image,
-    createdAt: "2026-07-10T00:00:00.000Z",
-  },
-  {
-    id: "4",
-    user: mockVideo.user,
-    title: "Why most people quit the gym in February",
-    url: "https://www.youtube.com/watch?v=ghi789",
-    category: { name: "Gym", description: "" },
-    platform: "Youtube",
-    image: mockVideo.image,
-    createdAt: "2026-07-08T00:00:00.000Z",
-  },
-];
 
 const formatDateEnglish = (dateProp: string) => {
   const date = new Date(dateProp);
@@ -69,8 +35,46 @@ const formatDateEnglish = (dateProp: string) => {
 };
 
 export const VideoDetail = () => {
-  const video = mockVideo;
-  const related = mockRelated;
+  const { id } = useParams(); // Guardamos el id de la url
+  const [video, setVideo] = useState<Video | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  // TODO (paso 6): sustituir por un fetch a GET /video/user/:id
+  const related: Video[] = [];
+
+  useEffect(() => {
+    getVideo();
+  }, [id]);
+
+  const getVideo = async () => {
+    const token = localStorage.getItem("token");
+    const url = `${Global.url}video/${id}`;
+    try {
+      if (!token) {
+        throw new Error("No token available");
+      }
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+      if (!response.ok) throw new Error("Error getting the video");
+      const data = await response.json();
+      setVideo(data.video);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Unexpected error";
+      setError(message);
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error || !video) return <p>{error || "Video not found"}</p>;
 
   return (
     <div className="video-detail-page">
@@ -140,7 +144,8 @@ export const VideoDetail = () => {
           <div className="video-detail__related-grid">
             {related.map((item) => (
               <VideoCard
-                key={item.id}
+                key={item._id}
+                _id={item._id}
                 user={item.user}
                 title={item.title}
                 url={item.url}

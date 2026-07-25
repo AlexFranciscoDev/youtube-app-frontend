@@ -12,7 +12,7 @@ import VideoCard from "../components/VideoCard";
 import { PasswordInput } from "../components/PasswordInput";
 import "./Profile.css";
 import "./AuthForm.css";
-import { Global } from "../helpers/Global";
+import { Global, resolveUploadUrl } from "../helpers/Global";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { validatePassword, validateConfirmPassword } from "../utils/validators";
@@ -26,7 +26,7 @@ type User = {
 };
 
 type Video = {
-  id: string;
+  _id: string;
   user: { _id: string; username: string; email: string };
   title: string;
   url: string;
@@ -220,7 +220,7 @@ export const Profile = () => {
             <div className="profile-avatar-wrap">
               {user.image ? (
                 <img
-                  src={user.image}
+                  src={resolveUploadUrl(user.image, "others")}
                   alt="profile_picture"
                 />
               ) : (
@@ -302,7 +302,8 @@ export const Profile = () => {
             ) : (
               videos.map((video) => (
                 <VideoCard
-                  key={video.id}
+                  key={video._id}
+                  _id={video._id}
                   user={video.user}
                   title={video.title}
                   url={video.url}
