@@ -113,11 +113,7 @@
   letter-spacing: 0.05em;
 }
 
-/* ── Sidebar account info ── */
-.profile-info {
-  padding: 1.25rem 1.25rem 1.5rem;
-}
-
+/* ── Sidebar edit actions ── */
 .profile-info__title {
   font-size: 0.8rem;
   font-weight: 600;
@@ -128,39 +124,88 @@
   text-align: center;
 }
 
-.profile-info-row {
+.profile-actions {
+  padding: 1.25rem 1.25rem 1.5rem;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.65rem 0;
-  border-bottom: 1px solid var(--color-border);
+  gap: 0.75rem;
 }
 
-.profile-info-row:last-child {
-  border-bottom: none;
-}
-
-.profile-info-row__label {
+.profile-action-btn {
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--color-text);
+  font-size: 0.82rem;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
 }
 
-.profile-info-row__label svg {
+.profile-action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.profile-action-btn--secondary {
+  background: var(--color-surface);
   color: var(--color-secondary);
-  width: 12px;
+  border: 1px solid var(--color-border);
+  box-shadow: none;
 }
 
-.profile-info-row__value {
-  font-size: 0.875rem;
-  font-weight: 500;
+.profile-action-btn--secondary:hover {
+  background: var(--accent-light);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Change password modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  z-index: 50;
+}
+
+.modal-card {
+  position: relative;
+  width: min(400px, 100%);
+  background: #fff;
+  border-radius: 20px;
+  padding: 2rem 1.75rem 1.75rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  text-align: left;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: #9CA3AF;
+  padding: 0.25rem;
+  box-shadow: none;
+}
+
+.modal-close:hover {
+  color: #374151;
+  transform: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
   color: var(--color-title);
-  padding-left: 1.25rem;
-  word-break: break-all;
 }
 
 /* ── Main content ── */

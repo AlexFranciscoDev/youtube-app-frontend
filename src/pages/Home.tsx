@@ -121,6 +121,7 @@ export const Home = () => {
           {videos.map((video) => (
             <VideoCard
               key={video._id}
+              _id={video._id}
               user={video.user}
               title={video.title}
               url={video.url}
