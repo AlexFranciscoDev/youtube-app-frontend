@@ -31,15 +31,20 @@
   color: var(--color-secondary);
 }
 
-/* ── Edit button ── */
+/* ── Edit button and delete button ── */
+.video-detail-buttons {
+  display: flex;
+  gap: 13px;
+}
+
+/* -- Edit button -- */
 .video-detail__edit-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-secondary);
-  background: var(--tag-color);
+  font-size: 1rem;
+  color: white;
+  background: var(--background-gradient);
   border: none;
   border-radius: 999px;
   padding: 0.5rem 1rem;

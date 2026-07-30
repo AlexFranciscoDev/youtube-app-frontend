@@ -1,0 +1,78 @@
+.delete-video__icon-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fef2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.delete-video__icon {
+  font-size: 1.4rem;
+  color: #dc2626;
+}
+
+.delete-video__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-title);
+  text-align: center;
+  margin-bottom: 0.6rem;
+}
+
+.delete-video__message {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.delete-video__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.delete-video__cancel-btn,
+.delete-video__confirm-btn {
+  flex: 1;
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.delete-video__cancel-btn {
+  background: #fff;
+  color: var(--color-title);
+  border: 1px solid var(--color-border);
+}
+
+.delete-video__cancel-btn:hover {
+  background: var(--color-bg);
+}
+
+.delete-video__confirm-btn {
+  color: #fff;
+  background: #dc2626;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35);
+}
+
+.delete-video__confirm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.45);
+}
+
+.delete-video__cancel-btn:disabled,
+.delete-video__confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
