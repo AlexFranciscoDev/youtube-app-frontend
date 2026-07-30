@@ -7,12 +7,14 @@ import {
   faChevronLeft,
   faPlay,
   faPenToSquare,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Global } from "../helpers/Global";
 import VideoCard from "../components/VideoCard";
 import { EditVideoModal } from "../components/EditVideoModal";
+import { DeleteVideoModal } from "../components/DeleteVideoModal";
 import { useAuth } from "../context/AuthContext";
 import "./VideoDetail.css";
 
@@ -45,6 +47,10 @@ export const VideoDetail = () => {
   const [error, setError] = useState("");
   const [related, setRelated] = useState<Video[]>([]);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false); //Used to know if we are deleting the post.
+  const [deleteError, setDeleteError] = useState(""); // Used to display an error if there's any
+  const navigate = useNavigate();
 
   useEffect(() => {
     getVideo();
@@ -106,6 +112,38 @@ export const VideoDetail = () => {
     }
   };
 
+  const handleDeleteVideo = async () => {
+    setDeleteError("");
+    setIsDeleting(true);
+    const token = localStorage.getItem("token");
+    const url = `${Global.url}video/${id}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ?? "",
+        },
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        setDeleteError(data.message ?? "Could not delete the video");
+        setIsDeleting(false);
+        return;
+      }
+      // Keep isDeleting true for these 3s so the modal keeps showing "Deleting..."
+      // right up until we navigate away — no need to reset it on success.
+      setTimeout(() => {
+        navigate("/"); // We've just deleted the video, so we navigate to the homepage
+      }, 3000);
+    } catch (error: unknown) {
+      console.log(error);
+      setDeleteError("Something went wrong, please try again");
+      setIsDeleting(false);
+    }
+  };
+
   if (isLoading) return <p>Loading...</p>;
   if (error || !video) return <p>{error || "Video not found"}</p>;
 
@@ -120,14 +158,24 @@ export const VideoDetail = () => {
         </Link>
 
         {isOwner && (
-          <button
-            type="button"
-            className="video-detail__edit-btn"
-            onClick={() => setShowEditModal(true)}
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-            Edit video
-          </button>
+          <div className="video-detail-buttons">
+            <button
+              type="button"
+              className="video-detail__edit-btn"
+              onClick={() => setShowEditModal(true)}
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+              Edit video
+            </button>
+            <button
+              type="button"
+              className="video-detail__edit-btn"
+              onClick={() => setShowDeleteModal(true)}
+            >
+              <FontAwesomeIcon icon={faTrash} />
+              Delete video
+            </button>
+          </div>
         )}
       </div>
 
@@ -210,6 +258,16 @@ export const VideoDetail = () => {
           video={video}
           onClose={() => setShowEditModal(false)}
           onSaved={() => getVideo()}
+        />
+      )}
+
+      {showDeleteModal && (
+        <DeleteVideoModal
+          video={video}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteVideo}
+          isDeleting={isDeleting}
+          error={deleteError}
         />
       )}
     </div>

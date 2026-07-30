@@ -44,6 +44,10 @@ export const Home = () => {
           Authorization: token,
         },
       });
+      if (response.status === 404) {
+        setVideos([]);
+        return;
+      }
       if (!response.ok) throw new Error("Error getting the videos");
       const data = await response.json();
 
