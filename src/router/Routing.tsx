@@ -8,6 +8,7 @@ import { Upload } from '../pages/Upload.tsx';
 import { Profile } from "../pages/Profile.tsx";
 import { VideoDetail } from "../pages/VideoDetail.tsx";
 import ProtectedRoute from '../helpers/ProtectedRoute';
+import { Categories } from '../pages/Categories.tsx';
 
 export const Routing = () => {
     return (
@@ -18,6 +19,7 @@ export const Routing = () => {
                     <Route path='/upload' element={<Upload />} />
                     <Route path="/profile/:id" element={<Profile/>}></Route>
                     <Route path="/video/:id" element={<VideoDetail/>}></Route>
+                    <Route path="/category/" element={<Categories/>}></Route>
                 </Route>
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
