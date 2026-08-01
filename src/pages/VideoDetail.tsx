@@ -15,7 +15,6 @@ import { Global } from "../helpers/Global";
 import VideoCard from "../components/VideoCard";
 import { EditVideoModal } from "../components/EditVideoModal";
 import { DeleteVideoModal } from "../components/DeleteVideoModal";
-import { useAuth } from "../context/AuthContext";
 import "./VideoDetail.css";
 
 type Video = {
@@ -41,7 +40,6 @@ const formatDateEnglish = (dateProp: string) => {
 
 export const VideoDetail = () => {
   const { id } = useParams(); // Guardamos el id de la url
-  const { user: authUser } = useAuth();
   const [video, setVideo] = useState<Video | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -147,8 +145,6 @@ export const VideoDetail = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error || !video) return <p>{error || "Video not found"}</p>;
 
-  const isOwner = !!authUser && authUser.id === video.user._id;
-
   return (
     <div className="video-detail-page">
       <div className="video-detail__top-bar">
@@ -157,26 +153,24 @@ export const VideoDetail = () => {
           Back to feed
         </Link>
 
-        {isOwner && (
-          <div className="video-detail-buttons">
-            <button
-              type="button"
-              className="video-detail__edit-btn"
-              onClick={() => setShowEditModal(true)}
-            >
-              <FontAwesomeIcon icon={faPenToSquare} />
-              Edit video
-            </button>
-            <button
-              type="button"
-              className="video-detail__edit-btn"
-              onClick={() => setShowDeleteModal(true)}
-            >
-              <FontAwesomeIcon icon={faTrash} />
-              Delete video
-            </button>
-          </div>
-        )}
+        <div className="video-detail-buttons">
+          <button
+            type="button"
+            className="video-detail__edit-btn"
+            onClick={() => setShowEditModal(true)}
+          >
+            <FontAwesomeIcon icon={faPenToSquare} />
+            Edit video
+          </button>
+          <button
+            type="button"
+            className="video-detail__edit-btn"
+            onClick={() => setShowDeleteModal(true)}
+          >
+            <FontAwesomeIcon icon={faTrash} />
+            Delete video
+          </button>
+        </div>
       </div>
 
       <div className="video-detail__player">
