@@ -23,7 +23,7 @@ type Video = {
   title: string;
   description: string;
   url: string;
-  category: { _id: string; name: string; description: string };
+  category: { _id: string; name: string; description: string } | null;
   platform: string;
   image: string;
   createdAt: string;
@@ -55,7 +55,7 @@ export const VideoDetail = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!video) return;
+    if (!video || !video.category) return;
     getRelatedVideos(video.category._id, video._id);
   }, [video]);
 
@@ -209,7 +209,7 @@ export const VideoDetail = () => {
           </span>
           <span className="video-detail__tag">
             <FontAwesomeIcon icon={faTag} className="video-detail__icon" />
-            {video.category.name}
+            {video.category?.name ?? "Uncategorized"}
           </span>
         </div>
 

@@ -11,7 +11,7 @@ type Video = {
   title: string;
   description: string;
   url: string;
-  category: { _id: string; name: string };
+  category: { _id: string; name: string } | null;
   platform: string;
   image: string;
 };
@@ -47,7 +47,7 @@ export const EditVideoModal = ({ video, onClose, onSaved }: EditVideoModalProps)
       description: video.description,
       url: video.url,
       platform: video.platform,
-      category: video.category._id,
+      category: video.category?._id ?? "",
     },
     seedPreviewSrc: resolveUploadUrl(video.image, "videos"),
     requireImage: false,

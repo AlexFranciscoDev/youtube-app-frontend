@@ -13,7 +13,7 @@ interface VideoCardProps {
   user: { _id: string; username: string; email: string };
   title: string;
   url: string;
-  category: { name: string; description: string };
+  category: { name: string; description: string } | null;
   platform: string;
   image: string;
   createdAt: string;
@@ -44,7 +44,7 @@ const VideoCard = (video: VideoCardProps) => {
         <div className="vcard__tags">
           <span className="vcard__tag">
             <FontAwesomeIcon icon={faTag} className="vcard__icon" />
-            {video.category.name}
+            {video.category?.name ?? "Uncategorized"}
           </span>
         </div>
         <span className="vcard__platform-badge">{video.platform}</span>

@@ -15,7 +15,7 @@ type Video = {
   user: { _id: string; username: string; email: string };
   title: string;
   url: string;
-  category: { name: string; description: string };
+  category: { name: string; description: string } | null;
   platform: string;
   image: string;
   createdAt: string;

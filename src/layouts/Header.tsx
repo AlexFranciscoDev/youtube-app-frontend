@@ -17,7 +17,7 @@ export const Header = () => {
         <header className='header'>
             <div className="layout-container mx-auto flex justify-between items-center p-5">
                 <div className="header-content flex flex-col gap-1">
-                    <h1 className='text-3xl font-bold'><Link to='/'>Video Organizer</Link></h1>
+                    <h1 className='text-3xl font-bold'><Link to='/' onClick={closeMenu}>Video Organizer</Link></h1>
                     <span>Organize and manage your videos</span>
                 </div>
 
@@ -30,6 +30,7 @@ export const Header = () => {
                         </div>
                     ) : (
                         <div className='flex gap-5 items-center'>
+                            <Link to="/category">Categories</Link>
                             <Link to="/upload">Add video</Link>
                             <Link to="/category/new">Add category</Link>
                             <Link to={`/profile/${user?.id}`}>@{user?.username}</Link>
@@ -67,6 +68,7 @@ export const Header = () => {
                                 <span>@{user?.username}</span>
                                 </Link>
                             </div>
+                            <Link to="/category" onClick={closeMenu}>Categories</Link>
                             <Link to="/upload" onClick={closeMenu}>Add video</Link>
                             <Link to="/category/new" onClick={closeMenu}>Add category</Link>
                             <Link to={`/profile/${user?.id}`} onClick={closeMenu}>My profile</Link>
