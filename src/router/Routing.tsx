@@ -9,6 +9,7 @@ import { Profile } from "../pages/Profile.tsx";
 import { VideoDetail } from "../pages/VideoDetail.tsx";
 import ProtectedRoute from '../helpers/ProtectedRoute';
 import { Categories } from '../pages/Categories.tsx';
+import { NewCategory } from '../pages/NewCategory.tsx';
 
 export const Routing = () => {
     return (
@@ -20,6 +21,7 @@ export const Routing = () => {
                     <Route path="/profile/:id" element={<Profile/>}></Route>
                     <Route path="/video/:id" element={<VideoDetail/>}></Route>
                     <Route path="/category/" element={<Categories/>}></Route>
+                    <Route path="/category/new" element={<NewCategory/>}></Route>
                 </Route>
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />

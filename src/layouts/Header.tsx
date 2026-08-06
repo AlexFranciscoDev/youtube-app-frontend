@@ -31,6 +31,7 @@ export const Header = () => {
                     ) : (
                         <div className='flex gap-5 items-center'>
                             <Link to="/upload">Add video</Link>
+                            <Link to="/category/new">Add category</Link>
                             <Link to={`/profile/${user?.id}`}>@{user?.username}</Link>
                             <Link to={`/profile/${user?.id}`}>
                                 <img src={avatarSrc} alt="profile_picture" className="w-13 h-13 object-cover rounded-full"/>
@@ -67,6 +68,7 @@ export const Header = () => {
                                 </Link>
                             </div>
                             <Link to="/upload" onClick={closeMenu}>Add video</Link>
+                            <Link to="/category/new" onClick={closeMenu}>Add category</Link>
                             <Link to={`/profile/${user?.id}`} onClick={closeMenu}>My profile</Link>
                             <button onClick={() => { closeMenu(); logout(); }}>Logout</button>
                         </>

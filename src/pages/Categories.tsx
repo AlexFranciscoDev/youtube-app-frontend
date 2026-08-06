@@ -4,11 +4,11 @@ import CategoryCard from "../components/CategoryCard";
 import "./Categories.css";
 
 type Category = {
-    _id: string,
-    name: string,
-    description: string,
-    image: string
-}
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+};
 
 export const Categories = () => {
   // Token used because you can only see data if it's logged in
@@ -18,43 +18,43 @@ export const Categories = () => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    getCategories();
-  }, [])
-
-  const getCategories = async () => {
-    const url = `${Global.url}category/`;
-    try {
+    async function getCategories() {
+      const url = `${Global.url}category/`;
+      try {
         // Check if there's a token
         if (!token) {
-            throw new Error("No token available");
+          throw new Error("No token available");
         }
         // Fetch petition
         const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: token
-            }
-        })
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        });
         // If ders no videos found, we set the videos to empty, otherwise we assign them
         if (response.status === 404) {
-            setCategories([]);
-            return;
+          setCategories([]);
+          return;
         }
         // If the petition is not valid, send error
-        if (!response.ok) throw new Error('Error getting the videos');
+        if (!response.ok) throw new Error("Error getting the videos");
         // The petition is good
         const data = await response.json();
         setCategories(data.categories);
-    } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : "Unexpected error";
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : "Unexpected error";
         setError(message);
         console.log(error);
-    } finally {
+      } finally {
         // After every operation, we change the loading status to false to stop displaying it
         setIsLoading(false);
+      }
     }
-  };
+    getCategories();
+  }, []);
 
   return (
     <div className="categories">

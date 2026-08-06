@@ -76,3 +76,15 @@ export const validateUploadImageOptional = (value: File | null): string => {
   if (value.size > 5 * 1024 * 1024) return 'Image must be 5MB or smaller'
   return ''
 }
+
+export const validateCategoryName = (value: string): string => {
+  if (!value.trim()) return 'Name is required'
+  if (value.trim().length < 3) return 'Name must contain more than 3 characters'
+  return ''
+}
+
+export const validateCategoryDescription = (value: string): string => {
+  if (!value.trim()) return 'Description is required'
+  if (value.trim().length < 10) return 'Description must contain more than 10 characters'
+  return ''
+}
